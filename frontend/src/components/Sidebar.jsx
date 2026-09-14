@@ -158,7 +158,7 @@ export default function Sidebar({ collapsed, activePage, onNavigate }) {
             Competitive Esports Community
           </div>
           <a
-            href="https://discord.gg/reikage"
+            href="https://discord.gg/XPzSv9eWvg"
             target="_blank"
             rel="noopener noreferrer"
             className="btn btn-secondary"

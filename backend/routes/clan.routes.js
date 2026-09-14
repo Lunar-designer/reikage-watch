@@ -21,7 +21,7 @@ router.get('/info', (req, res) => {
         scrimWinRate: '78.4%',
         discordMembers: 12450
       },
-      discordLink: 'https://discord.gg/reikage',
+      discordLink: 'https://discord.gg/XPzSv9eWvg',
       divisions: [
         { name: 'Valorant Pro Division', status: 'Masters Contender' },
         { name: 'Apex Legends Predator Squad', status: 'ALGS Circuit' },

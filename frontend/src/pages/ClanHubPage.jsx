@@ -268,7 +268,7 @@ export default function ClanHubPage({ onSelectCreator }) {
             </p>
 
             <a
-              href="https://discord.gg/reikage"
+              href="https://discord.gg/XPzSv9eWvg"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-primary"

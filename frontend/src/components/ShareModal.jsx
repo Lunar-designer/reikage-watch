@@ -84,7 +84,7 @@ export default function ShareModal({ isOpen, onClose, videoTitle, videoId }) {
               Share on X
             </a>
             <a
-              href="https://discord.com"
+              href="https://discord.gg/XPzSv9eWvg"
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-secondary"
