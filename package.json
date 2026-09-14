@@ -1,0 +1,11 @@
+{
+  "name": "reikage-watch",
+  "version": "1.0.0",
+  "description": "Premium video-sharing platform for the Reikage esports clan",
+  "scripts": {
+    "build": "npm --prefix backend install && npm --prefix frontend install && npm --prefix frontend run build",
+    "start": "node backend/server.js",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev"
+  }
+}
