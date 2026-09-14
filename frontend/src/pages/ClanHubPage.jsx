@@ -53,7 +53,6 @@ export default function ClanHubPage({ onSelectCreator }) {
             <span className="badge badge-reikage" style={{ padding: '4px 10px' }}>
               <Trophy size={13} /> REIKAGE CLAN ARENA
             </span>
-            <span className="badge">SEASON 1</span>
           </div>
 
           <h1 style={{ fontSize: '36px', fontWeight: 900, letterSpacing: '-0.02em', marginBottom: '12px' }}>

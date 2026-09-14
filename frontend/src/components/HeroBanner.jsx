@@ -7,7 +7,7 @@ export default function HeroBanner({ featuredVideo, onWatch }) {
   return (
     <div className="hero-spotlight">
       <img
-        src={featuredVideo.thumbnail_url || '/uploads/thumbnails/thumb_grand_finals.svg'}
+        src={featuredVideo.thumbnail_url || '/uploads/thumbnails/thumb_reikage_default.svg'}
         alt={featuredVideo.title}
         className="hero-backdrop-img"
       />
@@ -19,9 +19,9 @@ export default function HeroBanner({ featuredVideo, onWatch }) {
             <Trophy size={12} /> REIKAGE SPOTLIGHT
           </span>
           <span className="badge">
-            <Flame size={12} /> GRAND FINALS 2026
+            <Flame size={12} /> CLAN FEATURED
           </span>
-          <span className="badge">4K 60FPS</span>
+          <span className="badge">1080P 60FPS</span>
         </div>
 
         <h1 className="hero-title">{featuredVideo.title}</h1>

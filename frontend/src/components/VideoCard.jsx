@@ -16,13 +16,13 @@ export default function VideoCard({ video, onSelectVideo, onSelectCreator }) {
     <article className="video-card" onClick={() => onSelectVideo(video.id)}>
       <div className="video-thumbnail-wrapper">
         <img
-          src={video.thumbnail_url || '/uploads/thumbnails/thumb_grand_finals.svg'}
+          src={video.thumbnail_url || '/uploads/thumbnails/thumb_reikage_default.svg'}
           alt={video.title}
           className="video-thumbnail-img"
           loading="lazy"
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = '/uploads/thumbnails/thumb_grand_finals.svg';
+            e.target.src = '/uploads/thumbnails/thumb_reikage_default.svg';
           }}
         />
         {video.category && (

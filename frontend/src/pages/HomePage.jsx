@@ -80,12 +80,10 @@ export default function HomePage({ onSelectVideo, onSelectCreator, onNavigate })
                 <span className="badge badge-reikage" style={{ padding: '4px 10px' }}>
                   <Trophy size={13} /> OFFICIAL CLAN PLATFORM
                 </span>
-                <span className="badge">SEASON 1</span>
-                <span className="badge">ZERO COMPRESSION</span>
               </div>
 
               <h1 style={{ fontSize: '36px', fontWeight: 900, letterSpacing: '-0.02em', marginBottom: '10px' }}>
-                REIKAGE WATCH // ARENA
+                REIKAGE WATCH
               </h1>
 
               <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '22px' }}>

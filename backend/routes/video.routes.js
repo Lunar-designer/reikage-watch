@@ -193,7 +193,7 @@ router.post('/upload', authenticateToken, uploadMedia.fields([
     const videoFile = req.files.video[0];
     const videoUrl = `/uploads/videos/${videoFile.filename}`;
 
-    let thumbnailUrl = '/uploads/thumbnails/thumb_grand_finals.svg';
+    let thumbnailUrl = '/uploads/thumbnails/thumb_reikage_default.svg';
     if (req.files.thumbnail && req.files.thumbnail.length > 0) {
       thumbnailUrl = `/uploads/thumbnails/${req.files.thumbnail[0].filename}`;
     }
