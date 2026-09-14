@@ -35,15 +35,16 @@ export function AuthProvider({ children }) {
         }
       } catch (err) {
         const msg = (err.message || '').toLowerCase();
-        if (msg.includes('invalid') || msg.includes('expired') || msg.includes('suspended') || msg.includes('not found')) {
-          console.warn('Session rejected by server, logging out:', err.message);
+        if (msg.includes('jwt expired') || msg.includes('token expired') || msg.includes('invalid token') || msg.includes('jwt malformed') || msg.includes('suspended') || msg.includes('banned')) {
+          console.warn('Session invalid or expired, logging out:', err.message);
           localStorage.removeItem('rk_token');
           localStorage.removeItem('rk_user');
           setUser(null);
         } else {
-          // Network connection issue or server waking up: preserve session and retry
-          console.log('Server waking up or network pause, preserving session...');
-          setTimeout(checkAuth, 3000);
+          // Server sleeping on Render free tier or temporary connection pause:
+          // Preserve cached session and retry quietly
+          console.log('Server waking up or temporary network pause, preserving session...');
+          setTimeout(checkAuth, 4000);
         }
       } finally {
         setLoading(false);

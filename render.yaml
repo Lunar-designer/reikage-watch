@@ -10,3 +10,5 @@ services:
         value: 20.18.0
       - key: JWT_SECRET
         value: reikage_black_tier_stable_auth_key_2026_reikage_watch
+      - key: DATABASE_URL
+        value: postgresql://neondb_owner:npg_FkV9t8mGUiQv@ep-muddy-night-b4ho77fb-pooler.c-6.us-east-2.aws.neon.tech/neondb?sslmode=require
