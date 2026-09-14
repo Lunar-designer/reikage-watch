@@ -44,10 +44,11 @@ router.post('/video/:videoId', authenticateToken, (req, res) => {
     }
 
     const commentId = `cmt_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+    const createdAt = new Date().toISOString();
 
     dbRun(
-      `INSERT INTO comments (id, video_id, user_id, content) VALUES (?, ?, ?, ?)`,
-      [commentId, videoId, req.user.id, trimmed]
+      `INSERT INTO comments (id, video_id, user_id, content, created_at) VALUES (?, ?, ?, ?, ?)`,
+      [commentId, videoId, req.user.id, trimmed, createdAt]
     );
 
     const newComment = dbGet(

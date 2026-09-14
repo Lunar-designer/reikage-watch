@@ -38,6 +38,19 @@
       "is_banned": 0,
       "subscribers_count": 0,
       "created_at": "2026-09-14 12:53:18"
+    },
+    {
+      "id": "usr_1789390516897_ot1nxg",
+      "username": "smoke_user_6838",
+      "password_hash": "$2a$10$COnWLqcUa3qkyuutMWokUe4SibDU8WwHSH2LNXq5dy2Pk.zdk4dFy",
+      "avatar_url": "/uploads/avatars/avatar_admin.svg",
+      "banner_url": "",
+      "bio": "Reikage Clan Member",
+      "clan_rank": "Recruit",
+      "role": "user",
+      "is_banned": 0,
+      "subscribers_count": 0,
+      "created_at": "2026-09-14 12:55:16"
     }
   ],
   "videos": [
@@ -50,11 +63,11 @@
       "thumbnail_url": "/uploads/thumbnails/thumb_grand_finals.svg",
       "category": "Highlights",
       "tags": "",
-      "duration": "03:15",
-      "views_count": 1,
+      "duration": "00:47",
+      "views_count": 2,
       "likes_count": 0,
       "is_featured": 0,
-      "created_at": "2026-09-14 10:59:49"
+      "created_at": "2026-09-14T10:59:49.000Z"
     }
   ],
   "comments": [],
@@ -66,6 +79,13 @@
       "ip_address": "::1",
       "user_id": "usr_1789383562187_01q8wk",
       "viewed_at": 1789383589729
+    },
+    {
+      "id": "vw_1789390516961_qen0fp",
+      "video_id": "vid_1789383589105_iehpro",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789390516961
     }
   ],
   "clan_members": [
@@ -84,5 +104,5 @@
   ],
   "reports": [],
   "subscriptions": [],
-  "updatedAt": "2026-09-14T12:54:52.845Z"
+  "updatedAt": "2026-09-14T13:14:02.553Z"
 }

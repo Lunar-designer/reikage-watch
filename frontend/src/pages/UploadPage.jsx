@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { Upload, Video, Image, CheckCircle, AlertTriangle, FileText, Tag, Folder } from 'lucide-react';
+import { formatVideoDuration } from '../utils/dateUtils';
 
 const CATEGORIES = [
   'Highlights',
@@ -21,7 +22,8 @@ export default function UploadPage({ onSelectVideo, onNavigate }) {
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('Highlights');
   const [tags, setTags] = useState('');
-  const [duration, setDuration] = useState('03:15');
+  const [duration, setDuration] = useState('');
+  const [detectingDuration, setDetectingDuration] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -58,6 +60,30 @@ export default function UploadPage({ onSelectVideo, onNavigate }) {
         const baseName = file.name.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
         setTitle(baseName.toUpperCase());
       }
+
+      // Automatically detect real-time video duration from file metadata
+      setDetectingDuration(true);
+      const tempVideo = document.createElement('video');
+      tempVideo.preload = 'metadata';
+      const fileUrl = URL.createObjectURL(file);
+      tempVideo.src = fileUrl;
+
+      tempVideo.onloadedmetadata = () => {
+        URL.revokeObjectURL(fileUrl);
+        setDetectingDuration(false);
+        const sec = tempVideo.duration;
+        if (sec && !isNaN(sec) && isFinite(sec)) {
+          setDuration(formatVideoDuration(sec));
+        } else {
+          setDuration('00:00');
+        }
+      };
+
+      tempVideo.onerror = () => {
+        URL.revokeObjectURL(fileUrl);
+        setDetectingDuration(false);
+        setDuration('00:00');
+      };
     }
   };
 
@@ -94,7 +120,7 @@ export default function UploadPage({ onSelectVideo, onNavigate }) {
       formData.append('description', description.trim());
       formData.append('category', category);
       formData.append('tags', tags.trim());
-      formData.append('duration', duration.trim() || '03:30');
+      formData.append('duration', duration.trim() || '00:00');
 
       setUploadProgress(60);
       const res = await api.uploadVideo(formData);
@@ -172,7 +198,7 @@ export default function UploadPage({ onSelectVideo, onNavigate }) {
                 {videoFile.name}
               </div>
               <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                {(videoFile.size / (1024 * 1024)).toFixed(2)} MB • Ready for ingestion
+                {(videoFile.size / (1024 * 1024)).toFixed(2)} MB {duration ? `• Length: ${duration}` : detectingDuration ? '• Detecting length...' : ''} • Ready for ingestion
               </div>
               <button
                 type="button"
@@ -246,13 +272,20 @@ export default function UploadPage({ onSelectVideo, onNavigate }) {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: 800, color: 'var(--text-secondary)', marginBottom: '6px' }}>
-                DURATION (ESTIMATE)
-              </label>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                <label style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-secondary)' }}>
+                  DURATION {detectingDuration ? '(DETECTING...)' : '(AUTO-DETECTED)'}
+                </label>
+                {duration && !detectingDuration && (
+                  <span style={{ fontSize: '10px', color: '#fff', background: 'rgba(255,255,255,0.1)', padding: '1px 6px', borderRadius: '4px' }}>
+                    Auto-detected
+                  </span>
+                )}
+              </div>
               <input
                 type="text"
-                placeholder="03:45"
-                value={duration}
+                placeholder={detectingDuration ? 'Detecting length...' : '00:00'}
+                value={detectingDuration ? 'Detecting video length...' : duration}
                 onChange={(e) => setDuration(e.target.value)}
                 style={{ width: '100%' }}
               />

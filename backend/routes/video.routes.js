@@ -180,7 +180,7 @@ router.post('/upload', authenticateToken, uploadMedia.fields([
   { name: 'thumbnail', maxCount: 1 }
 ]), (req, res) => {
   try {
-    const { title, description = '', category = 'Highlights', tags = '', duration = '03:15' } = req.body;
+    const { title, description = '', category = 'Highlights', tags = '', duration = '00:00' } = req.body;
 
     if (!title || !title.trim()) {
       return res.status(400).json({ error: 'Video title is required.' });
@@ -199,10 +199,11 @@ router.post('/upload', authenticateToken, uploadMedia.fields([
     }
 
     const videoId = `vid_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+    const createdAt = new Date().toISOString();
 
     dbRun(
-      `INSERT INTO videos (id, user_id, title, description, video_url, thumbnail_url, category, tags, duration, views_count, likes_count, is_featured)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0)`,
+      `INSERT INTO videos (id, user_id, title, description, video_url, thumbnail_url, category, tags, duration, views_count, likes_count, is_featured, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0, ?)`,
       [
         videoId,
         req.user.id,
@@ -212,7 +213,8 @@ router.post('/upload', authenticateToken, uploadMedia.fields([
         thumbnailUrl,
         category,
         tags.trim(),
-        duration
+        (duration && duration.trim()) || '00:00',
+        createdAt
       ]
     );
 

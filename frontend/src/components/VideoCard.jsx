@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatTimeAgo } from '../utils/dateUtils';
 
 export default function VideoCard({ video, onSelectVideo, onSelectCreator }) {
   if (!video) return null;
@@ -9,23 +10,6 @@ export default function VideoCard({ video, onSelectVideo, onSelectCreator }) {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M views`;
     if (num >= 1000) return `${(num / 1000).toFixed(1)}K views`;
     return `${num} views`;
-  };
-
-  const formatTimeAgo = (dateString) => {
-    if (!dateString) return 'recently';
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffSec = Math.floor((now - date) / 1000);
-
-    if (diffSec < 60) return 'just now';
-    const diffMin = Math.floor(diffSec / 60);
-    if (diffMin < 60) return `${diffMin}m ago`;
-    const diffHours = Math.floor(diffMin / 60);
-    if (diffHours < 24) return `${diffHours}h ago`;
-    const diffDays = Math.floor(diffHours / 24);
-    if (diffDays < 30) return `${diffDays}d ago`;
-    const diffMonths = Math.floor(diffDays / 30);
-    return `${diffMonths}mo ago`;
   };
 
   return (
@@ -44,7 +28,7 @@ export default function VideoCard({ video, onSelectVideo, onSelectCreator }) {
         {video.category && (
           <span className="video-category-tag">{video.category}</span>
         )}
-        <span className="video-duration-pill">{video.duration || '03:45'}</span>
+        <span className="video-duration-pill">{video.duration || '00:00'}</span>
       </div>
 
       <div className="video-info">

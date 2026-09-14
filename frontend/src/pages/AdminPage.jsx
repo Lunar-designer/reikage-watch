@@ -5,6 +5,7 @@ import {
   Shield, Users, Video, AlertTriangle, Check, 
   Trash2, Star, Ban, UserCheck, Plus, RefreshCw 
 } from 'lucide-react';
+import { formatTimeAgo, parseUtcDate } from '../utils/dateUtils';
 
 export default function AdminPage({ onSelectVideo, onSelectCreator }) {
   const { user } = useAuth();
@@ -266,7 +267,7 @@ export default function AdminPage({ onSelectVideo, onSelectCreator }) {
                       </span>
                     </div>
                     <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                      Reported by @{rep.reporter_username} on {new Date(rep.created_at).toLocaleDateString()}
+                      Reported by @{rep.reporter_username} • {formatTimeAgo(rep.created_at)}
                     </span>
                   </div>
 

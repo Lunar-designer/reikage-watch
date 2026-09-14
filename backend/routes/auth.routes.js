@@ -42,11 +42,12 @@ router.post('/register', async (req, res) => {
     const passwordHash = await bcrypt.hash(password, saltRounds);
     const userId = `usr_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
     const defaultAvatar = '/uploads/avatars/avatar_admin.svg';
+    const createdAt = new Date().toISOString();
 
     dbRun(
-      `INSERT INTO users (id, username, password_hash, avatar_url, bio, clan_rank, role)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [userId, trimmedUser, passwordHash, defaultAvatar, 'Reikage Clan Member', 'Recruit', 'user']
+      `INSERT INTO users (id, username, password_hash, avatar_url, bio, clan_rank, role, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [userId, trimmedUser, passwordHash, defaultAvatar, 'Reikage Clan Member', 'Recruit', 'user', createdAt]
     );
 
     const token = jwt.sign({ id: userId, username: trimmedUser }, JWT_SECRET, { expiresIn: '7d' });

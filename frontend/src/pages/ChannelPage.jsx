@@ -3,6 +3,7 @@ import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import VideoCard from '../components/VideoCard';
 import ReportModal from '../components/ReportModal';
+import { parseUtcDate } from '../utils/dateUtils';
 import { 
   UserCheck, UserPlus, Upload, Settings, Eye, 
   Video as VideoIcon, Calendar, Flag, Shield 
@@ -278,7 +279,7 @@ export default function ChannelPage({ username, onSelectVideo, onNavigate }) {
               <div>
                 <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>JOINED REIKAGE</div>
                 <div style={{ fontSize: '18px', fontWeight: 800, color: '#fff' }}>
-                  {new Date(channel.created_at).toLocaleDateString()}
+                  {parseUtcDate(channel.created_at).toLocaleDateString()}
                 </div>
               </div>
               <div>

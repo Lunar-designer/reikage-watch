@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import VideoCard from '../components/VideoCard';
 import ShareModal from '../components/ShareModal';
 import ReportModal from '../components/ReportModal';
+import { formatTimeAgo, parseUtcDate } from '../utils/dateUtils';
 import { 
   ThumbsUp, Share2, Flag, Trash2, Check, UserPlus, 
   UserCheck, MessageSquare, Shield, Clock, Eye 
@@ -303,7 +304,7 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '8px', fontSize: '13px', fontWeight: 800 }}>
             <span>{video.views_count?.toLocaleString()} views</span>
-            <span>Uploaded {new Date(video.created_at).toLocaleDateString()}</span>
+            <span>Uploaded {formatTimeAgo(video.created_at)}</span>
             <span className="badge">{video.category}</span>
           </div>
 
@@ -434,7 +435,7 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
                       </span>
                     )}
                     <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                      {new Date(comment.created_at).toLocaleDateString()}
+                      {formatTimeAgo(comment.created_at)}
                     </span>
                   </div>
 

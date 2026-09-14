@@ -88,7 +88,7 @@ function syncFromBackupStore() {
           db.run(
             `INSERT OR IGNORE INTO videos (id, user_id, title, description, video_url, thumbnail_url, category, tags, duration, views_count, likes_count, is_featured, created_at)
              VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [v.id, v.user_id, v.title, v.description || '', v.video_url, v.thumbnail_url || '', v.category || 'Highlights', v.tags || '', v.duration || '03:15', v.views_count || 0, v.likes_count || 0, v.is_featured || 0, v.created_at || new Date().toISOString()]
+            [v.id, v.user_id, v.title, v.description || '', v.video_url, v.thumbnail_url || '', v.category || 'Highlights', v.tags || '', v.duration || '00:00', v.views_count || 0, v.likes_count || 0, v.is_featured || 0, v.created_at || new Date().toISOString()]
           );
         }
       }
@@ -151,7 +151,7 @@ function initTables() {
       thumbnail_url TEXT DEFAULT '',
       category TEXT DEFAULT 'Highlights',
       tags TEXT DEFAULT '',
-      duration TEXT DEFAULT '03:45',
+      duration TEXT DEFAULT '00:00',
       views_count INTEGER DEFAULT 0,
       likes_count INTEGER DEFAULT 0,
       is_featured INTEGER DEFAULT 0,

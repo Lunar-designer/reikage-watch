@@ -30,11 +30,12 @@ router.post('/', authenticateToken, (req, res) => {
     }
 
     const reportId = `rep_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+    const createdAt = new Date().toISOString();
 
     dbRun(
-      `INSERT INTO reports (id, reporter_id, target_type, target_id, reason, details, status)
-       VALUES (?, ?, ?, ?, ?, ?, 'pending')`,
-      [reportId, req.user.id, targetType, targetId, reason, details.trim().slice(0, 500)]
+      `INSERT INTO reports (id, reporter_id, target_type, target_id, reason, details, status, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, 'pending', ?)`,
+      [reportId, req.user.id, targetType, targetId, reason, details.trim().slice(0, 500), createdAt]
     );
 
     res.status(201).json({
