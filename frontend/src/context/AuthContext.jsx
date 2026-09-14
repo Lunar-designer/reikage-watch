@@ -4,7 +4,14 @@ import { api } from '../services/api';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    try {
+      const cached = localStorage.getItem('rk_user');
+      return cached ? JSON.parse(cached) : null;
+    } catch (e) {
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(true);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' or 'signup'
@@ -20,14 +27,24 @@ export function AuthProvider({ children }) {
         const data = await api.getMe();
         if (data && data.user) {
           setUser(data.user);
+          localStorage.setItem('rk_user', JSON.stringify(data.user));
         } else {
           localStorage.removeItem('rk_token');
+          localStorage.removeItem('rk_user');
           setUser(null);
         }
       } catch (err) {
-        console.warn('Session verification failed, logging out:', err.message);
-        localStorage.removeItem('rk_token');
-        setUser(null);
+        const msg = (err.message || '').toLowerCase();
+        if (msg.includes('invalid') || msg.includes('expired') || msg.includes('suspended') || msg.includes('not found')) {
+          console.warn('Session rejected by server, logging out:', err.message);
+          localStorage.removeItem('rk_token');
+          localStorage.removeItem('rk_user');
+          setUser(null);
+        } else {
+          // Network connection issue or server waking up: preserve session and retry
+          console.log('Server waking up or network pause, preserving session...');
+          setTimeout(checkAuth, 3000);
+        }
       } finally {
         setLoading(false);
       }
@@ -38,6 +55,7 @@ export function AuthProvider({ children }) {
   const login = async (username, password) => {
     const data = await api.login(username, password);
     localStorage.setItem('rk_token', data.token);
+    localStorage.setItem('rk_user', JSON.stringify(data.user));
     setUser(data.user);
     setAuthModalOpen(false);
     return data.user;
@@ -46,6 +64,7 @@ export function AuthProvider({ children }) {
   const register = async (username, password, confirmPassword) => {
     const data = await api.register(username, password, confirmPassword);
     localStorage.setItem('rk_token', data.token);
+    localStorage.setItem('rk_user', JSON.stringify(data.user));
     setUser(data.user);
     setAuthModalOpen(false);
     return data.user;
@@ -53,6 +72,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem('rk_token');
+    localStorage.removeItem('rk_user');
     setUser(null);
   };
 
@@ -70,6 +90,7 @@ export function AuthProvider({ children }) {
       const data = await api.getMe();
       if (data && data.user) {
         setUser(data.user);
+        localStorage.setItem('rk_user', JSON.stringify(data.user));
       }
     } catch (err) {
       console.error('Failed to refresh user:', err);

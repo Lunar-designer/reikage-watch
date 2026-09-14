@@ -1,0 +1,88 @@
+{
+  "users": [
+    {
+      "id": "usr_admin",
+      "username": "reikage_admin",
+      "password_hash": "$2a$10$kZWi3WoNv9GWPp4OIDQ90e0x7VWgrURpRCHD16OX67O86PHwRRM76",
+      "avatar_url": "/uploads/avatars/avatar_admin.svg",
+      "banner_url": "",
+      "bio": "Reikage Clan Master & Platform Director. Leading the premier black-tier competitive gaming roster.",
+      "clan_rank": "Clan Master",
+      "role": "admin",
+      "is_banned": 0,
+      "subscribers_count": 8450,
+      "created_at": "2026-09-14 10:49:24"
+    },
+    {
+      "id": "usr_1789383562187_01q8wk",
+      "username": "lunar",
+      "password_hash": "$2a$10$psahhSRL3oM.88bc87WCa.LSyrerFiBcjebgAKLSbd3mw76QImlee",
+      "avatar_url": "/uploads/avatars/avatar-1789383931313-613432243.jpg",
+      "banner_url": "",
+      "bio": "Reikage Clan Member",
+      "clan_rank": "Clan Master",
+      "role": "admin",
+      "is_banned": 0,
+      "subscribers_count": 0,
+      "created_at": "2026-09-14 10:59:22"
+    },
+    {
+      "id": "usr_1789390398837_9x8lbq",
+      "username": "persist_user_229",
+      "password_hash": "$2a$10$C7MP0L6PUrPISkcsdtC1puXdBKC/g1IJAXWGxDVhRgy7J.ki/CrIi",
+      "avatar_url": "/uploads/avatars/avatar_admin.svg",
+      "banner_url": "",
+      "bio": "Reikage Clan Member",
+      "clan_rank": "Recruit",
+      "role": "user",
+      "is_banned": 0,
+      "subscribers_count": 0,
+      "created_at": "2026-09-14 12:53:18"
+    }
+  ],
+  "videos": [
+    {
+      "id": "vid_1789383589105_iehpro",
+      "user_id": "usr_1789383562187_01q8wk",
+      "title": "bite by night",
+      "description": "",
+      "video_url": "/uploads/videos/video-1789383588792-437301178.mp4",
+      "thumbnail_url": "/uploads/thumbnails/thumb_grand_finals.svg",
+      "category": "Highlights",
+      "tags": "",
+      "duration": "03:15",
+      "views_count": 1,
+      "likes_count": 0,
+      "is_featured": 0,
+      "created_at": "2026-09-14 10:59:49"
+    }
+  ],
+  "comments": [],
+  "likes": [],
+  "views_log": [
+    {
+      "id": "vw_1789383589729_yip53u",
+      "video_id": "vid_1789383589105_iehpro",
+      "ip_address": "::1",
+      "user_id": "usr_1789383562187_01q8wk",
+      "viewed_at": 1789383589729
+    }
+  ],
+  "clan_members": [
+    {
+      "id": "cm_1789383952335",
+      "username": "lunar",
+      "role_title": "Clan Master",
+      "rank_tier": "Unranked",
+      "rating": 0,
+      "kd_ratio": 0,
+      "win_rate": 0,
+      "avatar_url": "/uploads/avatars/avatar_admin.svg",
+      "is_staff": 1,
+      "order_idx": 1
+    }
+  ],
+  "reports": [],
+  "subscriptions": [],
+  "updatedAt": "2026-09-14T12:54:52.845Z"
+}

@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dbFilePath = path.join(__dirname, 'reikage.db');
+const jsonStorePath = path.join(__dirname, 'reikage_store.json');
 
 let db = null;
 let SQL = null;
@@ -15,25 +16,113 @@ export async function getDb() {
 
   SQL = await initSqlJs();
   if (fs.existsSync(dbFilePath)) {
-    const fileBuffer = fs.readFileSync(dbFilePath);
-    db = new SQL.Database(fileBuffer);
+    try {
+      const fileBuffer = fs.readFileSync(dbFilePath);
+      db = new SQL.Database(fileBuffer);
+    } catch (err) {
+      console.warn('Failed to load binary SQLite, creating fresh in-memory database:', err.message);
+      db = new SQL.Database();
+    }
   } else {
     db = new SQL.Database();
-    saveDatabase();
   }
 
   initTables();
+  syncFromBackupStore();
+  saveDatabase();
+
   return db;
 }
 
 export function saveDatabase() {
   if (!db) return;
   try {
+    // 1. Save binary SQLite to disk
     const data = db.export();
     const buffer = Buffer.from(data);
     fs.writeFileSync(dbFilePath, buffer);
+
+    // 2. Also save clean JSON snapshot backup for 100% reliable persistence
+    const snapshot = {
+      users: dbAll('SELECT * FROM users'),
+      videos: dbAll('SELECT * FROM videos'),
+      comments: dbAll('SELECT * FROM comments'),
+      likes: dbAll('SELECT * FROM likes'),
+      views_log: dbAll('SELECT * FROM views_log'),
+      clan_members: dbAll('SELECT * FROM clan_members'),
+      reports: dbAll('SELECT * FROM reports'),
+      subscriptions: dbAll('SELECT * FROM subscriptions'),
+      updatedAt: new Date().toISOString()
+    };
+    fs.writeFileSync(jsonStorePath, JSON.stringify(snapshot, null, 2));
   } catch (err) {
     console.error('Failed to save database to disk:', err);
+  }
+}
+
+function syncFromBackupStore() {
+  if (!fs.existsSync(jsonStorePath)) return;
+  try {
+    const raw = fs.readFileSync(jsonStorePath, 'utf8');
+    const store = JSON.parse(raw);
+
+    // Restore any missing users
+    if (Array.isArray(store.users)) {
+      for (const u of store.users) {
+        const exists = dbGet('SELECT id FROM users WHERE id = ?', [u.id]);
+        if (!exists) {
+          db.run(
+            `INSERT OR IGNORE INTO users (id, username, password_hash, avatar_url, banner_url, bio, clan_rank, role, is_banned, subscribers_count, created_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [u.id, u.username, u.password_hash, u.avatar_url || '', u.banner_url || '', u.bio || '', u.clan_rank || 'Recruit', u.role || 'user', u.is_banned || 0, u.subscribers_count || 0, u.created_at || new Date().toISOString()]
+          );
+        }
+      }
+    }
+
+    // Restore any missing videos
+    if (Array.isArray(store.videos)) {
+      for (const v of store.videos) {
+        const exists = dbGet('SELECT id FROM videos WHERE id = ?', [v.id]);
+        if (!exists) {
+          db.run(
+            `INSERT OR IGNORE INTO videos (id, user_id, title, description, video_url, thumbnail_url, category, tags, duration, views_count, likes_count, is_featured, created_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [v.id, v.user_id, v.title, v.description || '', v.video_url, v.thumbnail_url || '', v.category || 'Highlights', v.tags || '', v.duration || '03:15', v.views_count || 0, v.likes_count || 0, v.is_featured || 0, v.created_at || new Date().toISOString()]
+          );
+        }
+      }
+    }
+
+    // Restore any missing clan members
+    if (Array.isArray(store.clan_members)) {
+      for (const m of store.clan_members) {
+        const exists = dbGet('SELECT id FROM clan_members WHERE id = ?', [m.id]);
+        if (!exists) {
+          db.run(
+            `INSERT OR IGNORE INTO clan_members (id, username, role_title, rank_tier, rating, kd_ratio, win_rate, avatar_url, is_staff, order_idx)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [m.id, m.username, m.role_title, m.rank_tier, m.rating || 0, m.kd_ratio || 0.0, m.win_rate || 0, m.avatar_url || '', m.is_staff || 0, m.order_idx || 0]
+          );
+        }
+      }
+    }
+
+    // Restore comments
+    if (Array.isArray(store.comments)) {
+      for (const c of store.comments) {
+        const exists = dbGet('SELECT id FROM comments WHERE id = ?', [c.id]);
+        if (!exists) {
+          db.run(
+            `INSERT OR IGNORE INTO comments (id, video_id, user_id, content, created_at)
+             VALUES (?, ?, ?, ?, ?)`,
+            [c.id, c.video_id, c.user_id, c.content, c.created_at || new Date().toISOString()]
+          );
+        }
+      }
+    }
+  } catch (err) {
+    console.error('Failed to sync from backup store:', err);
   }
 }
 
@@ -129,8 +218,6 @@ function initTables() {
       UNIQUE(subscriber_id, channel_id)
     );
   `);
-
-  saveDatabase();
 }
 
 // Database helper utilities for easy querying
