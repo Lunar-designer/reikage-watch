@@ -28,8 +28,16 @@ app.use(cors({
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
-// Static file storage for videos, thumbnails, avatars
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Static file storage for videos, thumbnails, avatars with byte-range streaming and caching
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+  maxAge: '7d',
+  setHeaders: (res, filePath) => {
+    res.setHeader('Accept-Ranges', 'bytes');
+    if (filePath.endsWith('.mp4') || filePath.endsWith('.webm')) {
+      res.setHeader('Cache-Control', 'public, max-age=604800');
+    }
+  }
+}));
 
 // Mount API routes
 app.use('/api/auth', authRoutes);

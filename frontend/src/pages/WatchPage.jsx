@@ -18,6 +18,7 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
   const [submittingComment, setSubmittingComment] = useState(false);
   const [relatedVideos, setRelatedVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isBuffering, setIsBuffering] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
 
   // Modals
@@ -134,8 +135,11 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: '100px 0', color: 'var(--text-muted)' }}>
-        <div style={{ fontSize: '16px', fontWeight: 800 }}>BUFFERING REIKAGE FEED...</div>
+      <div style={{ textAlign: 'center', padding: '120px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="reikage-spinner-white" style={{ width: '48px', height: '48px', marginBottom: '18px' }} />
+        <div style={{ fontSize: '14px', fontWeight: 800, color: '#ffffff', letterSpacing: '2px' }}>
+          BUFFERING REIKAGE FEED...
+        </div>
       </div>
     );
   }
@@ -174,10 +178,38 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
             controls
             autoPlay
             playsInline
+            onWaiting={() => setIsBuffering(true)}
+            onPlaying={() => setIsBuffering(false)}
+            onCanPlay={() => setIsBuffering(false)}
+            onLoadedData={() => setIsBuffering(false)}
+            onSeeking={() => setIsBuffering(true)}
+            onSeeked={() => setIsBuffering(false)}
             style={{ width: '100%', height: '100%', objectFit: 'contain' }}
           >
             Your browser does not support the HTML5 video player.
           </video>
+
+          {isBuffering && (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'rgba(0, 0, 0, 0.55)',
+                backdropFilter: 'blur(3px)',
+                pointerEvents: 'none',
+                zIndex: 10
+              }}
+            >
+              <div className="reikage-spinner-white" style={{ width: '52px', height: '52px', borderWidth: '4px' }} />
+              <div style={{ marginTop: '14px', fontSize: '12px', fontWeight: 800, color: '#ffffff', letterSpacing: '2px' }}>
+                BUFFERING VIDEO...
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Video Title */}

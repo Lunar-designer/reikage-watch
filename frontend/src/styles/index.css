@@ -730,3 +730,21 @@ input:focus, textarea:focus, select:focus {
     grid-template-columns: 1fr;
   }
 }
+
+/* Reikage Pure White Loading Spinner */
+.reikage-spinner-white {
+  width: 44px;
+  height: 44px;
+  border: 3.5px solid rgba(255, 255, 255, 0.12);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: reikageSpin 0.75s linear infinite;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.15);
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+@keyframes reikageSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

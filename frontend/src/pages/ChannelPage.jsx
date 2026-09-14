@@ -54,8 +54,11 @@ export default function ChannelPage({ username, onSelectVideo, onNavigate }) {
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: '100px 0', color: 'var(--text-muted)' }}>
-        <div style={{ fontSize: '15px', fontWeight: 800 }}>FETCHING REIKAGE CREATOR PROFILE...</div>
+      <div style={{ textAlign: 'center', padding: '120px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="reikage-spinner-white" style={{ width: '44px', height: '44px', marginBottom: '16px' }} />
+        <div style={{ fontSize: '14px', fontWeight: 800, color: '#ffffff', letterSpacing: '2px' }}>
+          FETCHING REIKAGE CREATOR PROFILE...
+        </div>
       </div>
     );
   }

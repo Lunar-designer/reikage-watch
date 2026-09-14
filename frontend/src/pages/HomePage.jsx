@@ -113,8 +113,11 @@ export default function HomePage({ onSelectVideo, onSelectCreator, onNavigate })
 
       {/* Videos Section */}
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: '14px', fontWeight: 700 }}>LOADING REIKAGE BROADCASTS...</div>
+        <div style={{ textAlign: 'center', padding: '80px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="reikage-spinner-white" style={{ width: '42px', height: '42px', marginBottom: '16px' }} />
+          <div style={{ fontSize: '14px', fontWeight: 800, color: '#ffffff', letterSpacing: '1.5px' }}>
+            LOADING REIKAGE BROADCASTS...
+          </div>
         </div>
       ) : videos.length === 0 ? (
         <div

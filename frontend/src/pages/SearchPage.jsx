@@ -75,8 +75,11 @@ export default function SearchPage({ query, onSelectVideo, onSelectCreator }) {
       </div>
 
       {loading ? (
-        <div style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: '15px', fontWeight: 800 }}>SEARCHING REIKAGE ARCHIVES...</div>
+        <div style={{ textAlign: 'center', padding: '80px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="reikage-spinner-white" style={{ width: '42px', height: '42px', marginBottom: '16px' }} />
+          <div style={{ fontSize: '14px', fontWeight: 800, color: '#ffffff', letterSpacing: '2px' }}>
+            SEARCHING REIKAGE ARCHIVES...
+          </div>
         </div>
       ) : videos.length === 0 && creators.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '80px 20px', background: 'var(--bg-surface)', borderRadius: 'var(--radius-md)' }}>
