@@ -33,43 +33,50 @@ export async function getDb() {
   if (db) return db;
 
   SQL = await initSqlJs();
-  if (fs.existsSync(dbFilePath)) {
-    try {
-      const fileBuffer = fs.readFileSync(dbFilePath);
-      db = new SQL.Database(fileBuffer);
-    } catch (err) {
-      console.warn('Failed to load binary SQLite, creating fresh in-memory database:', err.message);
-      db = new SQL.Database();
-    }
-  } else {
-    db = new SQL.Database();
-  }
 
-  initTables();
+  let loadedFromCloud = false;
 
-  // 1. Initial sync from local backup store
-  syncFromLocalStore();
-
-  // 2. Synchronize with Neon Cloud Store for 100% persistent cloud storage
+  // 1. Synchronize with Neon Cloud Store: Authoritative master for 100% persistent cloud storage
   if (cloudPool) {
     try {
       await initCloudTables();
       const cloudSnapshot = await fetchCloudSnapshot();
-      if (cloudSnapshot) {
-        console.log('Successfully connected to Neon! Restoring persistent cloud accounts and broadcasts...');
-        applySnapshotToDatabase(cloudSnapshot);
-        // Save merged data to disk
+      if (cloudSnapshot && Array.isArray(cloudSnapshot.users) && cloudSnapshot.users.length > 0) {
+        console.log('Restoring authoritative database directly from Neon PostgreSQL cloud snapshot...');
+        db = new SQL.Database();
+        initTables();
+        populateDatabaseFromSnapshot(cloudSnapshot);
         saveToDiskOnly();
-      } else {
-        console.log('Initializing Neon Cloud with current database snapshot...');
-        pushSnapshotToCloud();
+        loadedFromCloud = true;
       }
     } catch (err) {
       console.warn('Neon cloud synchronization notice:', err.message);
     }
   }
 
-  saveDatabase();
+  // 2. Fallback: Only if Neon Cloud was unavailable or brand new empty store
+  if (!loadedFromCloud) {
+    if (fs.existsSync(dbFilePath)) {
+      try {
+        const fileBuffer = fs.readFileSync(dbFilePath);
+        db = new SQL.Database(fileBuffer);
+      } catch (err) {
+        console.warn('Failed to load binary SQLite, creating fresh in-memory database:', err.message);
+        db = new SQL.Database();
+      }
+    } else {
+      db = new SQL.Database();
+    }
+
+    initTables();
+    syncFromLocalStore();
+
+    if (cloudPool) {
+      console.log('Initializing Neon Cloud with local database snapshot seed...');
+      await pushSnapshotToCloud();
+    }
+  }
+
   return db;
 }
 
@@ -93,24 +100,22 @@ async function fetchCloudSnapshot() {
   return null;
 }
 
-function pushSnapshotToCloud() {
+export async function pushSnapshotToCloud() {
   if (!cloudPool || !db) return;
   try {
     const snapshot = generateSnapshot();
-    cloudPool.query(
+    await cloudPool.query(
       `INSERT INTO reikage_cloud_store (id, data, updated_at)
        VALUES ('main_store', $1, NOW())
        ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()`,
       [snapshot]
-    ).catch(err => {
-      console.warn('Neon cloud backup failed:', err.message);
-    });
+    );
   } catch (err) {
-    console.warn('Could not generate snapshot for cloud:', err.message);
+    console.warn('Neon cloud backup failed:', err.message);
   }
 }
 
-function generateSnapshot() {
+export function generateSnapshot() {
   return {
     users: dbAll('SELECT * FROM users'),
     videos: dbAll('SELECT * FROM videos'),
@@ -124,7 +129,7 @@ function generateSnapshot() {
   };
 }
 
-function saveToDiskOnly() {
+export function saveToDiskOnly() {
   if (!db) return;
   try {
     const data = db.export();
@@ -137,23 +142,52 @@ function saveToDiskOnly() {
   }
 }
 
-export function saveDatabase() {
+export async function saveDatabase() {
   if (!db) return;
   try {
-    // 1. Save binary SQLite to local disk
-    const data = db.export();
-    const buffer = Buffer.from(data);
-    fs.writeFileSync(dbFilePath, buffer);
-
-    // 2. Save clean JSON snapshot backup locally
-    const snapshot = generateSnapshot();
-    fs.writeFileSync(jsonStorePath, JSON.stringify(snapshot, null, 2));
-
-    // 3. Persist to Neon PostgreSQL Cloud asynchronously (never lost on server restart or redeploy)
-    pushSnapshotToCloud();
+    saveToDiskOnly();
+    await pushSnapshotToCloud();
   } catch (err) {
     console.error('Failed to save database:', err);
   }
+}
+
+export async function deleteVideoCompletely(videoId) {
+  if (!db) return null;
+  const video = dbGet('SELECT * FROM videos WHERE id = ?', [videoId]);
+  if (!video) return null;
+
+  // Clean up all database relationships
+  db.run('DELETE FROM comments WHERE video_id = ?', [videoId]);
+  db.run('DELETE FROM likes WHERE video_id = ?', [videoId]);
+  db.run('DELETE FROM views_log WHERE video_id = ?', [videoId]);
+  db.run('DELETE FROM reports WHERE target_type = "video" AND target_id = ?', [videoId]);
+  db.run('DELETE FROM videos WHERE id = ?', [videoId]);
+
+  // Clean up physical media files
+  try {
+    if (video.video_url && video.video_url.startsWith('/uploads/videos/')) {
+      const vidPath = path.join(__dirname, '..', video.video_url);
+      if (fs.existsSync(vidPath)) {
+        fs.unlinkSync(vidPath);
+        console.log('Cleaned up video file:', vidPath);
+      }
+    }
+    if (video.thumbnail_url && video.thumbnail_url.startsWith('/uploads/thumbnails/') && !video.thumbnail_url.includes('thumb_reikage_default')) {
+      const thumbPath = path.join(__dirname, '..', video.thumbnail_url);
+      if (fs.existsSync(thumbPath)) {
+        fs.unlinkSync(thumbPath);
+        console.log('Cleaned up thumbnail file:', thumbPath);
+      }
+    }
+  } catch (fErr) {
+    console.warn('Physical media cleanup notice:', fErr.message);
+  }
+
+  // Atomically save to disk and Neon Cloud (awaited)
+  await saveDatabase();
+
+  return video;
 }
 
 function syncFromLocalStore() {
@@ -161,13 +195,13 @@ function syncFromLocalStore() {
   try {
     const raw = fs.readFileSync(jsonStorePath, 'utf8');
     const store = JSON.parse(raw);
-    applySnapshotToDatabase(store);
+    populateDatabaseFromSnapshot(store);
   } catch (err) {
     console.error('Failed to sync from local store:', err);
   }
 }
 
-function applySnapshotToDatabase(store) {
+function populateDatabaseFromSnapshot(store) {
   if (!store || !db) return;
 
   // Restore users
@@ -229,7 +263,7 @@ function applySnapshotToDatabase(store) {
   // Restore likes
   if (Array.isArray(store.likes)) {
     for (const l of store.likes) {
-      const exists = dbGet('SELECT id FROM likes WHERE id = ?', [l.id]);
+      const exists = dbGet('SELECT id FROM likes WHERE video_id = ? AND user_id = ?', [l.video_id, l.user_id]);
       if (!exists) {
         db.run(
           `INSERT OR IGNORE INTO likes (id, video_id, user_id, created_at)
@@ -243,12 +277,40 @@ function applySnapshotToDatabase(store) {
   // Restore subscriptions
   if (Array.isArray(store.subscriptions)) {
     for (const s of store.subscriptions) {
-      const exists = dbGet('SELECT id FROM subscriptions WHERE id = ?', [s.id]);
+      const exists = dbGet('SELECT id FROM subscriptions WHERE subscriber_id = ? AND channel_id = ?', [s.subscriber_id, s.channel_id]);
       if (!exists) {
         db.run(
           `INSERT OR IGNORE INTO subscriptions (id, subscriber_id, channel_id, created_at)
            VALUES (?, ?, ?, ?)`,
           [s.id, s.subscriber_id, s.channel_id, s.created_at || new Date().toISOString()]
+        );
+      }
+    }
+  }
+
+  // Restore reports
+  if (Array.isArray(store.reports)) {
+    for (const r of store.reports) {
+      const exists = dbGet('SELECT id FROM reports WHERE id = ?', [r.id]);
+      if (!exists) {
+        db.run(
+          `INSERT OR IGNORE INTO reports (id, reporter_id, target_type, target_id, reason, details, status, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+          [r.id, r.reporter_id, r.target_type, r.target_id, r.reason, r.details || '', r.status || 'pending', r.created_at || new Date().toISOString()]
+        );
+      }
+    }
+  }
+
+  // Restore views_log
+  if (Array.isArray(store.views_log)) {
+    for (const v of store.views_log) {
+      const exists = dbGet('SELECT id FROM views_log WHERE id = ?', [v.id]);
+      if (!exists) {
+        db.run(
+          `INSERT OR IGNORE INTO views_log (id, video_id, ip_address, user_id, viewed_at)
+           VALUES (?, ?, ?, ?, ?)`,
+          [v.id, v.video_id, v.ip_address, v.user_id, v.viewed_at]
         );
       }
     }
@@ -377,6 +439,6 @@ export function dbGet(sql, params = []) {
 export function dbRun(sql, params = []) {
   if (!db) throw new Error('Database not initialized. Call getDb() first.');
   db.run(sql, params);
-  saveDatabase();
+  saveDatabase().catch(err => console.warn('Background database save warning:', err.message));
   return { success: true };
 }

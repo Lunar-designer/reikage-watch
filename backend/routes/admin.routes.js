@@ -1,5 +1,5 @@
 import express from 'express';
-import { dbAll, dbGet, dbRun } from '../db/database.js';
+import { dbAll, dbGet, dbRun, deleteVideoCompletely } from '../db/database.js';
 import { requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -161,16 +161,12 @@ router.put('/reports/:id/status', (req, res) => {
 });
 
 // Remove video as admin
-router.delete('/videos/:id', (req, res) => {
+router.delete('/videos/:id', async (req, res) => {
   try {
     const video = dbGet('SELECT id, title FROM videos WHERE id = ?', [req.params.id]);
     if (!video) return res.status(404).json({ error: 'Video not found.' });
 
-    dbRun('DELETE FROM comments WHERE video_id = ?', [video.id]);
-    dbRun('DELETE FROM likes WHERE video_id = ?', [video.id]);
-    dbRun('DELETE FROM views_log WHERE video_id = ?', [video.id]);
-    dbRun('DELETE FROM reports WHERE target_type = "video" AND target_id = ?', [video.id]);
-    dbRun('DELETE FROM videos WHERE id = ?', [video.id]);
+    await deleteVideoCompletely(video.id);
 
     res.json({ message: `Video "${video.title}" removed by Reikage clan administration.` });
   } catch (err) {

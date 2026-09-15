@@ -1,7 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { dbGet, dbRun } from '../db/database.js';
+import { dbGet, dbRun, saveDatabase } from '../db/database.js';
 import { authenticateToken, JWT_SECRET } from '../middleware/auth.js';
 import { uploadMedia } from '../middleware/upload.js';
 
@@ -49,6 +49,8 @@ router.post('/register', async (req, res) => {
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [userId, trimmedUser, passwordHash, defaultAvatar, 'Reikage Clan Member', 'Recruit', 'user', createdAt]
     );
+
+    await saveDatabase();
 
     const token = jwt.sign({ id: userId, username: trimmedUser }, JWT_SECRET, { expiresIn: '7d' });
 
@@ -150,6 +152,8 @@ router.put('/settings', authenticateToken, uploadMedia.single('avatar'), async (
     } else {
       dbRun('UPDATE users SET bio = ?, avatar_url = ? WHERE id = ?', [updatedBio, avatarUrl, user.id]);
     }
+
+    await saveDatabase();
 
     const updatedUser = dbGet('SELECT id, username, avatar_url, bio, clan_rank, role, subscribers_count, created_at FROM users WHERE id = ?', [user.id]);
     res.json({ message: 'Profile updated successfully.', user: updatedUser });

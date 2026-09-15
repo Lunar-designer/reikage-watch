@@ -51,43 +51,41 @@
       "is_banned": 0,
       "subscribers_count": 0,
       "created_at": "2026-09-14 12:55:16"
+    },
+    {
+      "id": "usr_1789398820268_7qtg31",
+      "username": "Umbra",
+      "password_hash": "$2a$10$pYlBqf69p7oRWQzrM.ECWeDP0Unpbrge269g1je/0Q6GKyDmiIADe",
+      "avatar_url": "/uploads/avatars/avatar-1789398983013-78618492.png",
+      "banner_url": "",
+      "bio": "Reikage Clan Member",
+      "clan_rank": "Recruit",
+      "role": "user",
+      "is_banned": 0,
+      "subscribers_count": 0,
+      "created_at": "2026-09-14T15:13:40.268Z"
     }
   ],
   "videos": [
     {
-      "id": "vid_1789383589105_iehpro",
-      "user_id": "usr_1789383562187_01q8wk",
-      "title": "bite by night",
+      "id": "vid_1789398849356_jyg66b",
+      "user_id": "usr_1789398820268_7qtg31",
+      "title": "Cosmic Garou Transform",
       "description": "",
-      "video_url": "/uploads/videos/video-1789383588792-437301178.mp4",
-      "thumbnail_url": "/uploads/thumbnails/thumb_reikage_default.svg",
+      "video_url": "/uploads/videos/video-1789398844879-271266565.mp4",
+      "thumbnail_url": "/uploads/thumbnails/thumbnail-1789398849269-210412536.png",
       "category": "Highlights",
       "tags": "",
-      "duration": "00:47",
+      "duration": "00:30",
       "views_count": 2,
       "likes_count": 0,
       "is_featured": 0,
-      "created_at": "2026-09-14T10:59:49.000Z"
+      "created_at": "2026-09-14T15:14:09.357Z"
     }
   ],
   "comments": [],
   "likes": [],
-  "views_log": [
-    {
-      "id": "vw_1789383589729_yip53u",
-      "video_id": "vid_1789383589105_iehpro",
-      "ip_address": "::1",
-      "user_id": "usr_1789383562187_01q8wk",
-      "viewed_at": 1789383589729
-    },
-    {
-      "id": "vw_1789390516961_qen0fp",
-      "video_id": "vid_1789383589105_iehpro",
-      "ip_address": "::1",
-      "user_id": null,
-      "viewed_at": 1789390516961
-    }
-  ],
+  "views_log": [],
   "clan_members": [
     {
       "id": "cm_1789383952335",
@@ -104,5 +102,5 @@
   ],
   "reports": [],
   "subscriptions": [],
-  "updatedAt": "2026-09-14T15:11:46.315Z"
+  "updatedAt": "2026-09-15T03:17:47.821Z"
 }

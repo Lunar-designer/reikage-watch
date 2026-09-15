@@ -2,7 +2,7 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { dbAll, dbGet, dbRun } from '../db/database.js';
+import { dbAll, dbGet, dbRun, deleteVideoCompletely, saveDatabase } from '../db/database.js';
 import { authenticateToken, optionalAuth } from '../middleware/auth.js';
 import { uploadMedia } from '../middleware/upload.js';
 
@@ -178,7 +178,7 @@ router.get('/:id', optionalAuth, (req, res) => {
 router.post('/upload', authenticateToken, uploadMedia.fields([
   { name: 'video', maxCount: 1 },
   { name: 'thumbnail', maxCount: 1 }
-]), (req, res) => {
+]), async (req, res) => {
   try {
     const { title, description = '', category = 'Highlights', tags = '', duration = '00:00' } = req.body;
 
@@ -217,6 +217,8 @@ router.post('/upload', authenticateToken, uploadMedia.fields([
         createdAt
       ]
     );
+
+    await saveDatabase();
 
     const createdVideo = dbGet(
       `SELECT v.*, u.username as creator_username, u.avatar_url as creator_avatar, u.clan_rank as creator_rank
@@ -273,7 +275,7 @@ router.post('/:id/like', authenticateToken, (req, res) => {
 });
 
 // Delete video (Owner or Admin)
-router.delete('/:id', authenticateToken, (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const video = dbGet('SELECT * FROM videos WHERE id = ?', [req.params.id]);
     if (!video) {
@@ -284,12 +286,7 @@ router.delete('/:id', authenticateToken, (req, res) => {
       return res.status(403).json({ error: 'You do not have permission to delete this video.' });
     }
 
-    // Remove comments, likes, reports, and video record
-    dbRun('DELETE FROM comments WHERE video_id = ?', [video.id]);
-    dbRun('DELETE FROM likes WHERE video_id = ?', [video.id]);
-    dbRun('DELETE FROM views_log WHERE video_id = ?', [video.id]);
-    dbRun('DELETE FROM reports WHERE target_type = "video" AND target_id = ?', [video.id]);
-    dbRun('DELETE FROM videos WHERE id = ?', [video.id]);
+    await deleteVideoCompletely(video.id);
 
     res.json({ message: 'Video removed successfully.' });
   } catch (err) {

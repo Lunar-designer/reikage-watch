@@ -1,5 +1,5 @@
 import express from 'express';
-import { dbAll, dbGet, dbRun } from '../db/database.js';
+import { dbAll, dbGet, dbRun, saveDatabase } from '../db/database.js';
 import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -70,7 +70,7 @@ router.post('/video/:videoId', authenticateToken, (req, res) => {
 });
 
 // Delete comment (Author or Admin)
-router.delete('/:id', authenticateToken, (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const comment = dbGet('SELECT * FROM comments WHERE id = ?', [req.params.id]);
     if (!comment) {
@@ -83,6 +83,7 @@ router.delete('/:id', authenticateToken, (req, res) => {
 
     dbRun('DELETE FROM reports WHERE target_type = "comment" AND target_id = ?', [comment.id]);
     dbRun('DELETE FROM comments WHERE id = ?', [comment.id]);
+    await saveDatabase();
 
     res.json({ message: 'Comment deleted successfully.' });
   } catch (err) {
