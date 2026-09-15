@@ -27,7 +27,10 @@ const storage = multer.diskStorage({
     }
   },
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
+    let ext = path.extname(file.originalname).toLowerCase();
+    if (!ext || ext === '.') {
+      ext = file.mimetype === 'image/png' ? '.png' : '.jpg';
+    }
     const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
     cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
   }
@@ -37,7 +40,7 @@ const fileFilter = (req, file, cb) => {
   if (file.fieldname === 'video') {
     const allowedVideoTypes = /mp4|webm|mkv|mov/;
     const ext = path.extname(file.originalname).toLowerCase().replace('.', '');
-    const mime = file.mimetype;
+    const mime = file.mimetype || '';
     if (allowedVideoTypes.test(ext) || mime.startsWith('video/')) {
       return cb(null, true);
     }
@@ -45,13 +48,13 @@ const fileFilter = (req, file, cb) => {
   }
 
   if (file.fieldname === 'thumbnail' || file.fieldname === 'avatar') {
-    const allowedImgTypes = /jpg|jpeg|png|webp|svg\+xml|svg/;
+    const allowedImgTypes = /^(jpg|jpeg|png|webp|svg|gif|bmp|jfif|avif|ico|tiff)$/i;
     const ext = path.extname(file.originalname).toLowerCase().replace('.', '');
-    const mime = file.mimetype;
-    if (allowedImgTypes.test(ext) || mime.startsWith('image/')) {
+    const mime = (file.mimetype || '').toLowerCase();
+    if (allowedImgTypes.test(ext) || mime.startsWith('image/') || mime === 'application/octet-stream') {
       return cb(null, true);
     }
-    return cb(new Error('Invalid image format. Supported: PNG, JPG, JPEG, WEBP, SVG.'));
+    return cb(new Error('Invalid image format. Supported: PNG, JPG, JPEG, WEBP, GIF, BMP, JFIF, SVG.'));
   }
 
   cb(new Error('Unsupported file field'));

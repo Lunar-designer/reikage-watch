@@ -748,3 +748,13 @@ input:focus, textarea:focus, select:focus {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Universal Avatar Protection: prevent any crushing, stretching or distortion */
+img[src*="/uploads/avatars/"],
+.avatar-img,
+.avatar-circle,
+.video-creator-avatar {
+  object-fit: cover !important;
+  aspect-ratio: 1 / 1 !important;
+}
+

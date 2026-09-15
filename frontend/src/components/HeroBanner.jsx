@@ -41,7 +41,7 @@ export default function HeroBanner({ featuredVideo, onWatch }) {
             <img
               src={featuredVideo.creator_avatar || '/uploads/avatars/avatar_admin.svg'}
               alt={featuredVideo.creator_username}
-              style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid #fff' }}
+              style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid #fff', objectFit: 'cover', aspectRatio: '1 / 1' }}
             />
             <div style={{ fontSize: '13px' }}>
               <div style={{ fontWeight: 800, color: '#fff' }}>{featuredVideo.creator_username}</div>

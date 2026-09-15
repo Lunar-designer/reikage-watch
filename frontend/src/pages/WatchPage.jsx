@@ -302,7 +302,7 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
             <img
               src={video.creator_avatar || '/uploads/avatars/avatar_admin.svg'}
               alt={video.creator_username}
-              style={{ width: '44px', height: '44px', borderRadius: '50%', cursor: 'pointer', border: '1.5px solid #ffffff' }}
+              style={{ width: '44px', height: '44px', borderRadius: '50%', cursor: 'pointer', border: '1.5px solid #ffffff', objectFit: 'cover', aspectRatio: '1 / 1', flexShrink: 0 }}
               onClick={() => onSelectCreator(video.creator_username)}
             />
             <div>
@@ -452,7 +452,7 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
               <img
                 src={user.avatar_url || '/uploads/avatars/avatar_admin.svg'}
                 alt={user.username}
-                style={{ width: '40px', height: '40px', borderRadius: '50%', flexShrink: 0 }}
+                style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', aspectRatio: '1 / 1', flexShrink: 0 }}
               />
               <div style={{ flex: 1 }}>
                 <input
@@ -521,7 +521,7 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
                 <img
                   src={comment.avatar_url || '/uploads/avatars/avatar_admin.svg'}
                   alt={comment.username}
-                  style={{ width: '36px', height: '36px', borderRadius: '50%', flexShrink: 0 }}
+                  style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', aspectRatio: '1 / 1', flexShrink: 0 }}
                 />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>

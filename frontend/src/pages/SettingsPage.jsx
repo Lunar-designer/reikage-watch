@@ -1,13 +1,16 @@
 import React, { useState, useRef } from 'react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import { Settings, Shield, User, Lock, Upload, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Settings, Shield, User, Lock, Upload, CheckCircle, AlertTriangle, Crop } from 'lucide-react';
+import AvatarCropModal from '../components/AvatarCropModal';
 
 export default function SettingsPage({ onNavigate }) {
   const { user, refreshUser, openAuthModal } = useAuth();
   const [bio, setBio] = useState(user?.bio || '');
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(user?.avatar_url || '');
+  const [rawImageForCrop, setRawImageForCrop] = useState(null);
+  const [showCropModal, setShowCropModal] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -33,11 +36,31 @@ export default function SettingsPage({ onNavigate }) {
   }
 
   const handleAvatarSelect = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (file) {
-      setAvatarFile(file);
-      setAvatarPreview(URL.createObjectURL(file));
+      if (!file.type.startsWith('image/') && !/\.(jpe?g|png|webp|gif|bmp|jfif|avif)$/i.test(file.name)) {
+        setErrorMsg('Please select a valid image file (JPG, PNG, WEBP, GIF, BMP, JFIF).');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = () => {
+        setRawImageForCrop(reader.result);
+        setShowCropModal(true);
+      };
+      reader.readAsDataURL(file);
     }
+    e.target.value = '';
+  };
+
+  const handleCropConfirm = (croppedFile, croppedPreviewUrl) => {
+    setAvatarFile(croppedFile);
+    setAvatarPreview(croppedPreviewUrl);
+    setShowCropModal(false);
+    setSuccessMsg('Profile photo scaled & centered! Click "Save Settings" below to publish.');
+  };
+
+  const handleCropCancel = () => {
+    setShowCropModal(false);
   };
 
   const handleSave = async (e) => {
@@ -68,7 +91,7 @@ export default function SettingsPage({ onNavigate }) {
       const formData = new FormData();
       formData.append('bio', bio);
       if (avatarFile) {
-        formData.append('avatar', avatarFile);
+        formData.append('avatar', avatarFile, 'avatar.jpg');
       }
       if (newPassword) {
         formData.append('newPassword', newPassword);
@@ -77,12 +100,13 @@ export default function SettingsPage({ onNavigate }) {
 
       await api.updateSettings(formData);
       await refreshUser();
-      setSuccessMsg('Account settings updated successfully.');
+      setSuccessMsg('Account settings and avatar updated successfully!');
+      setAvatarFile(null);
       setCurrentPassword('');
       setNewPassword('');
       setConfirmNewPassword('');
     } catch (err) {
-      setErrorMsg(err.message || 'Failed to update settings');
+      setErrorMsg(err.message || 'Failed to update settings. Please verify your photo size and try again.');
     } finally {
       setLoading(false);
     }
@@ -90,6 +114,15 @@ export default function SettingsPage({ onNavigate }) {
 
   return (
     <div style={{ maxWidth: '680px', margin: '0 auto', paddingBottom: '60px' }}>
+      {/* Crop and Scale Modal */}
+      {showCropModal && rawImageForCrop && (
+        <AvatarCropModal
+          imageSrc={rawImageForCrop}
+          onCancel={handleCropCancel}
+          onConfirm={handleCropConfirm}
+        />
+      )}
+
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
         <Settings size={24} color="#ffffff" />
         <h1 style={{ fontSize: '24px', fontWeight: 900 }}>ACCOUNT SETTINGS // {user.username}</h1>
@@ -117,16 +150,29 @@ export default function SettingsPage({ onNavigate }) {
             <img
               src={avatarPreview || '/uploads/avatars/avatar_admin.svg'}
               alt={user.username}
-              style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #fff' }}
+              style={{ width: '84px', height: '84px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #fff', flexShrink: 0 }}
             />
-            <div>
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => avatarInputRef.current?.click()}
-              >
-                <Upload size={16} /> Upload New Avatar
-              </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => avatarInputRef.current?.click()}
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <Upload size={16} /> Choose & Scale Photo
+                </button>
+                {rawImageForCrop && (
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setShowCropModal(true)}
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <Crop size={16} /> Re-adjust Scaling
+                  </button>
+                )}
+              </div>
               <input
                 ref={avatarInputRef}
                 type="file"
@@ -134,8 +180,8 @@ export default function SettingsPage({ onNavigate }) {
                 style={{ display: 'none' }}
                 onChange={handleAvatarSelect}
               />
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '6px' }}>
-                PNG, JPG, SVG, or WEBP. Max 10MB.
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                Select any photo from PC. Interactive scaling ensures your profile photo is never squished or crushed.
               </div>
             </div>
           </div>

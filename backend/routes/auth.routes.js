@@ -124,48 +124,67 @@ router.get('/me', authenticateToken, (req, res) => {
 });
 
 // Update profile settings
-router.put('/settings', authenticateToken, uploadMedia.single('avatar'), async (req, res) => {
-  try {
-    const { bio, newPassword, currentPassword } = req.body;
-    const user = dbGet('SELECT * FROM users WHERE id = ?', [req.user.id]);
-
-    let avatarUrl = user.avatar_url;
-    if (req.file) {
-      avatarUrl = `/uploads/avatars/${req.file.filename}`;
+router.put('/settings', authenticateToken, (req, res) => {
+  uploadMedia.single('avatar')(req, res, async (uploadErr) => {
+    if (uploadErr) {
+      console.warn('Avatar upload warning:', uploadErr.message);
+      return res.status(400).json({ error: uploadErr.message || 'Avatar upload failed. Please try a different photo format.' });
     }
 
-    const updatedBio = bio !== undefined ? bio.trim().slice(0, 300) : user.bio;
+    try {
+      const { bio, newPassword, currentPassword } = req.body;
+      const user = dbGet('SELECT * FROM users WHERE id = ?', [req.user.id]);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found.' });
+      }
 
-    if (newPassword) {
-      if (!currentPassword) {
-        return res.status(400).json({ error: 'Current password is required to set a new password.' });
+      let avatarUrl = user.avatar_url;
+      if (req.file) {
+        avatarUrl = `/uploads/avatars/${req.file.filename}`;
       }
-      const match = await bcrypt.compare(currentPassword, user.password_hash);
-      if (!match) {
-        return res.status(400).json({ error: 'Current password is incorrect.' });
+
+      const updatedBio = bio !== undefined ? bio.trim().slice(0, 300) : user.bio;
+
+      if (newPassword) {
+        if (!currentPassword) {
+          return res.status(400).json({ error: 'Current password is required to set a new password.' });
+        }
+        const match = await bcrypt.compare(currentPassword, user.password_hash);
+        if (!match) {
+          return res.status(400).json({ error: 'Current password is incorrect.' });
+        }
+        if (newPassword.length < 6) {
+          return res.status(400).json({ error: 'New password must be at least 6 characters.' });
+        }
+        const newHash = await bcrypt.hash(newPassword, 10);
+        dbRun('UPDATE users SET password_hash = ?, bio = ?, avatar_url = ? WHERE id = ?', [newHash, updatedBio, avatarUrl, user.id]);
+      } else {
+        dbRun('UPDATE users SET bio = ?, avatar_url = ? WHERE id = ?', [updatedBio, avatarUrl, user.id]);
       }
-      if (newPassword.length < 6) {
-        return res.status(400).json({ error: 'New password must be at least 6 characters.' });
+
+      // If user is also on clan roster, sync avatar there too
+      dbRun('UPDATE clan_members SET avatar_url = ? WHERE LOWER(username) = LOWER(?)', [avatarUrl, user.username]);
+
+      // Cloud backup: non-blocking so temporary cloud latencies never fail user settings
+      if (req.file && fs.existsSync(req.file.path)) {
+        try {
+          const avatarBuffer = fs.readFileSync(req.file.path);
+          saveMediaToCloud(`/avatars/${req.file.filename}`, avatarBuffer, req.file.mimetype || 'image/jpeg')
+            .catch(cErr => console.warn('Cloud avatar backup notice:', cErr.message));
+        } catch (fErr) {
+          console.warn('Local avatar read notice:', fErr.message);
+        }
       }
-      const newHash = await bcrypt.hash(newPassword, 10);
-      dbRun('UPDATE users SET password_hash = ?, bio = ?, avatar_url = ? WHERE id = ?', [newHash, updatedBio, avatarUrl, user.id]);
-    } else {
-      dbRun('UPDATE users SET bio = ?, avatar_url = ? WHERE id = ?', [updatedBio, avatarUrl, user.id]);
+
+      await saveDatabase();
+
+      const updatedUser = dbGet('SELECT id, username, avatar_url, bio, clan_rank, role, subscribers_count, created_at FROM users WHERE id = ?', [user.id]);
+      res.json({ message: 'Profile updated successfully.', user: updatedUser });
+    } catch (err) {
+      console.error('Settings update error:', err);
+      res.status(500).json({ error: 'Failed to update profile settings.' });
     }
-
-    if (req.file && fs.existsSync(req.file.path)) {
-      const avatarBuffer = fs.readFileSync(req.file.path);
-      await saveMediaToCloud(`/avatars/${req.file.filename}`, avatarBuffer, req.file.mimetype || 'image/jpeg');
-    }
-
-    await saveDatabase();
-
-    const updatedUser = dbGet('SELECT id, username, avatar_url, bio, clan_rank, role, subscribers_count, created_at FROM users WHERE id = ?', [user.id]);
-    res.json({ message: 'Profile updated successfully.', user: updatedUser });
-  } catch (err) {
-    console.error('Settings update error:', err);
-    res.status(500).json({ error: 'Failed to update profile settings.' });
-  }
+  });
 });
 
 export default router;
