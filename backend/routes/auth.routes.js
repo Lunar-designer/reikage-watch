@@ -1,7 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { dbGet, dbRun, saveDatabase } from '../db/database.js';
+import { dbGet, dbRun, saveDatabase, saveMediaToCloud } from '../db/database.js';
 import { authenticateToken, JWT_SECRET } from '../middleware/auth.js';
 import { uploadMedia } from '../middleware/upload.js';
 
@@ -151,6 +151,11 @@ router.put('/settings', authenticateToken, uploadMedia.single('avatar'), async (
       dbRun('UPDATE users SET password_hash = ?, bio = ?, avatar_url = ? WHERE id = ?', [newHash, updatedBio, avatarUrl, user.id]);
     } else {
       dbRun('UPDATE users SET bio = ?, avatar_url = ? WHERE id = ?', [updatedBio, avatarUrl, user.id]);
+    }
+
+    if (req.file && fs.existsSync(req.file.path)) {
+      const avatarBuffer = fs.readFileSync(req.file.path);
+      await saveMediaToCloud(`/avatars/${req.file.filename}`, avatarBuffer, req.file.mimetype || 'image/jpeg');
     }
 
     await saveDatabase();

@@ -7,7 +7,7 @@ import ReportModal from '../components/ReportModal';
 import { formatTimeAgo, parseUtcDate } from '../utils/dateUtils';
 import { 
   ThumbsUp, Share2, Flag, Trash2, Check, UserPlus, 
-  UserCheck, MessageSquare, Shield, Clock, Eye 
+  UserCheck, MessageSquare, Shield, Clock, Eye, AlertTriangle, RotateCw 
 } from 'lucide-react';
 
 export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
@@ -19,6 +19,7 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
   const [relatedVideos, setRelatedVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isBuffering, setIsBuffering] = useState(false);
+  const [videoError, setVideoError] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
 
   // Modals
@@ -179,17 +180,22 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
             autoPlay
             playsInline
             onWaiting={() => setIsBuffering(true)}
-            onPlaying={() => setIsBuffering(false)}
-            onCanPlay={() => setIsBuffering(false)}
-            onLoadedData={() => setIsBuffering(false)}
+            onPlaying={() => { setIsBuffering(false); setVideoError(false); }}
+            onCanPlay={() => { setIsBuffering(false); setVideoError(false); }}
+            onLoadedData={() => { setIsBuffering(false); setVideoError(false); }}
             onSeeking={() => setIsBuffering(true)}
             onSeeked={() => setIsBuffering(false)}
+            onError={(e) => {
+              console.warn('Video failed to load or stream:', e);
+              setIsBuffering(false);
+              setVideoError(true);
+            }}
             style={{ width: '100%', height: '100%', objectFit: 'contain' }}
           >
             Your browser does not support the HTML5 video player.
           </video>
 
-          {isBuffering && (
+          {isBuffering && !videoError && (
             <div
               style={{
                 position: 'absolute',
@@ -207,6 +213,67 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
               <div className="reikage-spinner-white" style={{ width: '52px', height: '52px', borderWidth: '4px' }} />
               <div style={{ marginTop: '14px', fontSize: '12px', fontWeight: 800, color: '#ffffff', letterSpacing: '2px' }}>
                 BUFFERING VIDEO...
+              </div>
+            </div>
+          )}
+
+          {videoError && (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'rgba(8, 8, 8, 0.92)',
+                backdropFilter: 'blur(6px)',
+                zIndex: 15,
+                padding: '28px',
+                textAlign: 'center'
+              }}
+            >
+              <div
+                style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  background: 'rgba(255, 68, 68, 0.12)',
+                  border: '1px solid rgba(255, 68, 68, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '14px'
+                }}
+              >
+                <AlertTriangle size={28} color="#ff5555" />
+              </div>
+              <div style={{ fontSize: '16px', fontWeight: 900, color: '#ffffff', letterSpacing: '1px', marginBottom: '8px' }}>
+                BROADCAST FEED UNAVAILABLE
+              </div>
+              <div style={{ fontSize: '13px', color: 'var(--text-muted)', maxWidth: '440px', lineHeight: 1.5, marginBottom: '20px' }}>
+                This match recording is currently unavailable or corrupted. You can retry loading or select another broadcast.
+              </div>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    setVideoError(false);
+                    setIsBuffering(true);
+                    const v = document.querySelector('.video-player-container video');
+                    if (v) { v.load(); v.play().catch(() => {}); }
+                  }}
+                  style={{ borderRadius: 'var(--radius-full)', padding: '9px 18px' }}
+                >
+                  <RotateCw size={15} /> Retry Playback
+                </button>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => { window.location.hash = '#home'; }}
+                  style={{ borderRadius: 'var(--radius-full)', padding: '9px 18px' }}
+                >
+                  Back to Arena Feed
+                </button>
               </div>
             </div>
           )}

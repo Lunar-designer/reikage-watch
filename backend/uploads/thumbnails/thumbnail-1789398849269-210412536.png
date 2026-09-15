@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="rkBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#050505" />
+      <stop offset="45%" stop-color="#121212" />
+      <stop offset="100%" stop-color="#020202" />
+    </linearGradient>
+
+    <linearGradient id="crestGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="50%" stop-color="#d0d0d0" />
+      <stop offset="100%" stop-color="#707070" />
+    </linearGradient>
+
+    <radialGradient id="centerGlow" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.12" />
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.03" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+
+    <pattern id="rkGrid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="rgba(255,255,255,0.035)" stroke-width="1"/>
+      <circle cx="24" cy="24" r="0.8" fill="rgba(255,255,255,0.08)" />
+    </pattern>
+
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.2)" />
+      <stop offset="50%" stop-color="rgba(255,255,255,0.05)" />
+      <stop offset="100%" stop-color="rgba(255,255,255,0.2)" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1280" height="720" fill="url(#rkBgGrad)" />
+  <rect width="1280" height="720" fill="url(#rkGrid)" />
+  <rect width="1280" height="720" fill="url(#centerGlow)" />
+
+  <!-- Geometric Polygonal Esports Backing -->
+  <polygon points="640,60 880,360 640,660 400,360" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="2" />
+  <polygon points="640,110 830,360 640,610 450,360" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" stroke-dasharray="12 8" />
+
+  <!-- Horizontal & Vertical Horizon Lines -->
+  <line x1="120" y1="360" x2="420" y2="360" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-dasharray="10 6" />
+  <line x1="860" y1="360" x2="1160" y2="360" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" stroke-dasharray="10 6" />
+  
+  <line x1="640" y1="60" x2="640" y2="120" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+  <line x1="640" y1="600" x2="640" y2="660" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" />
+
+  <!-- Center Reikage Diamond Crest -->
+  <g transform="translate(640, 275)">
+    <!-- Outer Diamond Shadow & Glow -->
+    <path d="M 0 -105 L 85 -10 L 0 85 L -85 -10 Z" fill="none" stroke="url(#crestGrad)" stroke-width="3" filter="drop-shadow(0 0 16px rgba(255,255,255,0.3))" />
+    <!-- Inner Facets -->
+    <path d="M 0 -85 L 65 -10 L 0 65 L -65 -10 Z" fill="#121212" fill-opacity="0.85" stroke="rgba(255,255,255,0.3)" stroke-width="1.5" />
+    <path d="M 0 -55 L 42 -10 L 0 42 L -42 -10 Z" fill="url(#crestGrad)" fill-opacity="0.9" />
+    <!-- Center Core Point -->
+    <circle cx="0" cy="-10" r="4" fill="#ffffff" />
+  </g>
+
+  <!-- Typography Block -->
+  <!-- Main Brand Title -->
+  <text x="640" y="445" font-family="'Outfit', 'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="62" fill="#ffffff" letter-spacing="12" text-anchor="middle">
+    REIKAGE
+  </text>
+
+  <!-- Subtitle -->
+  <text x="640" y="488" font-family="'Outfit', 'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="16" fill="#a0a0a0" letter-spacing="7" text-anchor="middle">
+    WATCH // CLAN BROADCAST
+  </text>
+
+  <!-- Motto Pill -->
+  <g transform="translate(640, 535)">
+    <rect x="-140" y="-16" width="280" height="32" rx="16" fill="#141414" stroke="rgba(255,255,255,0.18)" stroke-width="1" />
+    <text x="0" y="5" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="11.5" fill="#ffffff" letter-spacing="3" text-anchor="middle">
+      WATCH. CREATE. REIKAGE.
+    </text>
+  </g>
+
+  <!-- Top Left Header Watermark -->
+  <g transform="translate(60, 65)">
+    <polygon points="0,-12 10,0 0,12 -10,0" fill="#ffffff" />
+    <text x="22" y="4" font-family="'Outfit', 'Plus Jakarta Sans', sans-serif" font-weight="900" font-size="16" fill="#ffffff" letter-spacing="3">
+      REIKAGE WATCH
+    </text>
+  </g>
+
+  <!-- Top Right Live/Reel Telemetry -->
+  <g transform="translate(1220, 65)">
+    <rect x="-190" y="-14" width="190" height="28" rx="6" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+    <circle cx="-174" cy="0" r="4" fill="#ffffff" />
+    <text x="-90" y="4" font-family="'Plus Jakarta Sans', sans-serif" font-weight="700" font-size="10.5" fill="#cccccc" letter-spacing="2" text-anchor="middle">
+      MATCH FOOTAGE // HD
+    </text>
+  </g>
+
+  <!-- Corner Tech HUD Accents -->
+  <!-- Top Left Bracket -->
+  <path d="M 30 50 L 30 30 L 50 30" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+  <!-- Top Right Bracket -->
+  <path d="M 1250 50 L 1250 30 L 1230 30" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+  <!-- Bottom Left Bracket -->
+  <path d="M 30 670 L 30 690 L 50 690" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+  <!-- Bottom Right Bracket -->
+  <path d="M 1250 670 L 1250 690 L 1230 690" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" />
+
+  <!-- Outer Framing Border -->
+  <rect x="25" y="25" width="1230" height="670" rx="8" fill="none" stroke="url(#borderGrad)" stroke-width="1" />
+</svg>

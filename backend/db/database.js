@@ -88,7 +88,47 @@ async function initCloudTables() {
       data JSONB NOT NULL,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
     );
+
+    CREATE TABLE IF NOT EXISTS reikage_media_files (
+      filepath VARCHAR(255) PRIMARY KEY,
+      mime_type VARCHAR(100) NOT NULL,
+      data BYTEA NOT NULL,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    );
   `);
+}
+
+export async function saveMediaToCloud(filepath, buffer, mimeType = 'application/octet-stream') {
+  if (!cloudPool || !buffer) return;
+  try {
+    const normalized = filepath.replace(/\\/g, '/').replace(/^\/uploads\//, '/');
+    await cloudPool.query(
+      `INSERT INTO reikage_media_files (filepath, mime_type, data, created_at)
+       VALUES ($1, $2, $3, NOW())
+       ON CONFLICT (filepath) DO UPDATE SET data = EXCLUDED.data, mime_type = EXCLUDED.mime_type, created_at = NOW()`,
+      [normalized, mimeType, buffer]
+    );
+    console.log(`Uploaded persistent media to Neon Cloud: ${normalized} (${buffer.length} bytes)`);
+  } catch (err) {
+    console.warn('Neon cloud media save warning:', err.message);
+  }
+}
+
+export async function getMediaFromCloud(filepath) {
+  if (!cloudPool) return null;
+  try {
+    const normalized = filepath.replace(/\\/g, '/').replace(/^\/uploads\//, '/');
+    const res = await cloudPool.query(
+      `SELECT mime_type, data FROM reikage_media_files WHERE filepath = $1`,
+      [normalized]
+    );
+    if (res.rows && res.rows.length > 0) {
+      return res.rows[0];
+    }
+  } catch (err) {
+    console.warn('Neon cloud media fetch error:', err.message);
+  }
+  return null;
 }
 
 async function fetchCloudSnapshot() {
@@ -164,7 +204,7 @@ export async function deleteVideoCompletely(videoId) {
   db.run('DELETE FROM reports WHERE target_type = "video" AND target_id = ?', [videoId]);
   db.run('DELETE FROM videos WHERE id = ?', [videoId]);
 
-  // Clean up physical media files
+  // Clean up physical media files and Neon cloud media
   try {
     if (video.video_url && video.video_url.startsWith('/uploads/videos/')) {
       const vidPath = path.join(__dirname, '..', video.video_url);
@@ -172,12 +212,20 @@ export async function deleteVideoCompletely(videoId) {
         fs.unlinkSync(vidPath);
         console.log('Cleaned up video file:', vidPath);
       }
+      if (cloudPool) {
+        const vidRel = video.video_url.replace(/^\/uploads\//, '/');
+        cloudPool.query('DELETE FROM reikage_media_files WHERE filepath = $1', [vidRel]).catch(() => {});
+      }
     }
     if (video.thumbnail_url && video.thumbnail_url.startsWith('/uploads/thumbnails/') && !video.thumbnail_url.includes('thumb_reikage_default')) {
       const thumbPath = path.join(__dirname, '..', video.thumbnail_url);
       if (fs.existsSync(thumbPath)) {
         fs.unlinkSync(thumbPath);
         console.log('Cleaned up thumbnail file:', thumbPath);
+      }
+      if (cloudPool) {
+        const thumbRel = video.thumbnail_url.replace(/^\/uploads\//, '/');
+        cloudPool.query('DELETE FROM reikage_media_files WHERE filepath = $1', [thumbRel]).catch(() => {});
       }
     }
   } catch (fErr) {

@@ -3,7 +3,7 @@ import cors from 'cors';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import { getDb } from './db/database.js';
+import { getDb, getMediaFromCloud } from './db/database.js';
 
 import authRoutes from './routes/auth.routes.js';
 import videoRoutes from './routes/video.routes.js';
@@ -28,7 +28,7 @@ app.use(cors({
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
-// Static file storage for videos, thumbnails, avatars with byte-range streaming and caching
+// 1. Static file storage for videos, thumbnails, avatars with byte-range streaming and caching
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   maxAge: '7d',
   setHeaders: (res, filePath) => {
@@ -38,6 +38,31 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
     }
   }
 }));
+
+// 2. Cloud Media Fallback: If not on ephemeral disk, retrieve directly from Neon Cloud Media store
+app.use('/uploads', async (req, res) => {
+  try {
+    const relPath = req.path; // e.g. /videos/video-xxx.mp4
+    const media = await getMediaFromCloud(relPath);
+    if (media && media.data) {
+      // Cache file locally to ephemeral disk for high-speed subsequent chunks
+      const localFilePath = path.join(__dirname, 'uploads', relPath);
+      const dir = path.dirname(localFilePath);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(localFilePath, media.data);
+
+      res.setHeader('Content-Type', media.mime_type || 'application/octet-stream');
+      res.setHeader('Accept-Ranges', 'bytes');
+      res.setHeader('Cache-Control', 'public, max-age=604800');
+      return res.send(media.data);
+    }
+  } catch (err) {
+    console.warn('Neon cloud media fallback notice:', err.message);
+  }
+
+  // Not found locally or in cloud — return 404 immediately, never hang connection
+  return res.status(404).json({ error: 'Requested media asset not found.' });
+});
 
 // Mount API routes
 app.use('/api/auth', authRoutes);
@@ -63,9 +88,10 @@ const frontendDistPath = path.join(__dirname, '../frontend/dist');
 if (fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
   app.get('*', (req, res) => {
-    if (!req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
-      res.sendFile(path.join(frontendDistPath, 'index.html'));
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) {
+      return res.status(404).json({ error: 'Not found.' });
     }
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
   });
 }
 

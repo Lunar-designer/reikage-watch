@@ -2,7 +2,7 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { dbAll, dbGet, dbRun, deleteVideoCompletely, saveDatabase } from '../db/database.js';
+import { dbAll, dbGet, dbRun, deleteVideoCompletely, saveDatabase, saveMediaToCloud } from '../db/database.js';
 import { authenticateToken, optionalAuth } from '../middleware/auth.js';
 import { uploadMedia } from '../middleware/upload.js';
 
@@ -217,6 +217,21 @@ router.post('/upload', authenticateToken, uploadMedia.fields([
         createdAt
       ]
     );
+
+    // 1. Save video file to Neon Cloud Media for persistent storage
+    if (videoFile && fs.existsSync(videoFile.path)) {
+      const vidBuffer = fs.readFileSync(videoFile.path);
+      await saveMediaToCloud(`/videos/${videoFile.filename}`, vidBuffer, videoFile.mimetype || 'video/mp4');
+    }
+
+    // 2. Save custom thumbnail to Neon Cloud Media if present
+    if (req.files.thumbnail && req.files.thumbnail.length > 0) {
+      const thumbFile = req.files.thumbnail[0];
+      if (fs.existsSync(thumbFile.path)) {
+        const thumbBuffer = fs.readFileSync(thumbFile.path);
+        await saveMediaToCloud(`/thumbnails/${thumbFile.filename}`, thumbBuffer, thumbFile.mimetype || 'image/jpeg');
+      }
+    }
 
     await saveDatabase();
 
