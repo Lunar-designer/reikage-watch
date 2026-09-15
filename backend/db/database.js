@@ -262,6 +262,11 @@ function populateDatabaseFromSnapshot(store) {
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [u.id, u.username, u.password_hash, u.avatar_url || '', u.banner_url || '', u.bio || '', u.clan_rank || 'Recruit', u.role || 'user', u.is_banned || 0, u.subscribers_count || 0, u.created_at || new Date().toISOString()]
         );
+      } else {
+        db.run(
+          `UPDATE users SET subscribers_count = ?, clan_rank = ?, avatar_url = COALESCE(NULLIF(?, ''), avatar_url), bio = COALESCE(NULLIF(?, ''), bio), role = ? WHERE id = ?`,
+          [u.subscribers_count || 0, u.clan_rank || 'Recruit', u.avatar_url || '', u.bio || '', u.role || 'user', u.id]
+        );
       }
     }
   }
@@ -289,6 +294,11 @@ function populateDatabaseFromSnapshot(store) {
           `INSERT OR IGNORE INTO clan_members (id, username, role_title, rank_tier, rating, kd_ratio, win_rate, avatar_url, is_staff, order_idx)
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [m.id, m.username, m.role_title, m.rank_tier, m.rating || 0, m.kd_ratio || 0.0, m.win_rate || 0, m.avatar_url || '', m.is_staff || 0, m.order_idx || 0]
+        );
+      } else {
+        db.run(
+          `UPDATE clan_members SET role_title = ?, rank_tier = ?, rating = ?, kd_ratio = ?, win_rate = ?, is_staff = ?, order_idx = ? WHERE id = ?`,
+          [m.role_title, m.rank_tier, m.rating || 0, m.kd_ratio || 0.0, m.win_rate || 0, m.is_staff || 0, m.order_idx || 0, m.id]
         );
       }
     }

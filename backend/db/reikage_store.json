@@ -1,106 +1,90 @@
 {
+  "likes": [],
   "users": [
     {
       "id": "usr_admin",
+      "bio": "Reikage Clan Master & Platform Director. Leading the premier black-tier competitive gaming roster.",
+      "role": "admin",
       "username": "reikage_admin",
-      "password_hash": "$2a$10$kZWi3WoNv9GWPp4OIDQ90e0x7VWgrURpRCHD16OX67O86PHwRRM76",
+      "clan_rank": "Clan Master",
+      "is_banned": 0,
       "avatar_url": "/uploads/avatars/avatar_admin.svg",
       "banner_url": "",
-      "bio": "Reikage Clan Master & Platform Director. Leading the premier black-tier competitive gaming roster.",
-      "clan_rank": "Clan Master",
-      "role": "admin",
-      "is_banned": 0,
-      "subscribers_count": 8450,
-      "created_at": "2026-09-14 10:49:24"
+      "created_at": "2026-09-14 10:49:24",
+      "password_hash": "$2a$10$kZWi3WoNv9GWPp4OIDQ90e0x7VWgrURpRCHD16OX67O86PHwRRM76",
+      "subscribers_count": 8450
     },
     {
       "id": "usr_1789383562187_01q8wk",
+      "bio": "Reikage Clan Member",
+      "role": "admin",
       "username": "lunar",
-      "password_hash": "$2a$10$psahhSRL3oM.88bc87WCa.LSyrerFiBcjebgAKLSbd3mw76QImlee",
+      "clan_rank": "Reikage Watch Owner",
+      "is_banned": 0,
       "avatar_url": "/uploads/avatars/avatar-1789383931313-613432243.jpg",
       "banner_url": "",
-      "bio": "Reikage Clan Member",
-      "clan_rank": "Clan Master",
-      "role": "admin",
-      "is_banned": 0,
-      "subscribers_count": 0,
-      "created_at": "2026-09-14 10:59:22"
+      "created_at": "2026-09-14 10:59:22",
+      "password_hash": "$2a$10$psahhSRL3oM.88bc87WCa.LSyrerFiBcjebgAKLSbd3mw76QImlee",
+      "subscribers_count": 12850
     },
     {
       "id": "usr_1789390398837_9x8lbq",
+      "bio": "Reikage Clan Member",
+      "role": "user",
       "username": "persist_user_229",
-      "password_hash": "$2a$10$C7MP0L6PUrPISkcsdtC1puXdBKC/g1IJAXWGxDVhRgy7J.ki/CrIi",
+      "clan_rank": "Recruit",
+      "is_banned": 1,
       "avatar_url": "/uploads/avatars/avatar_admin.svg",
       "banner_url": "",
-      "bio": "Reikage Clan Member",
-      "clan_rank": "Recruit",
-      "role": "user",
-      "is_banned": 0,
-      "subscribers_count": 0,
-      "created_at": "2026-09-14 12:53:18"
+      "created_at": "2026-09-14 12:53:18",
+      "password_hash": "$2a$10$C7MP0L6PUrPISkcsdtC1puXdBKC/g1IJAXWGxDVhRgy7J.ki/CrIi",
+      "subscribers_count": 0
     },
     {
       "id": "usr_1789390516897_ot1nxg",
+      "bio": "Reikage Clan Member",
+      "role": "user",
       "username": "smoke_user_6838",
-      "password_hash": "$2a$10$COnWLqcUa3qkyuutMWokUe4SibDU8WwHSH2LNXq5dy2Pk.zdk4dFy",
+      "clan_rank": "Recruit",
+      "is_banned": 1,
       "avatar_url": "/uploads/avatars/avatar_admin.svg",
       "banner_url": "",
-      "bio": "Reikage Clan Member",
-      "clan_rank": "Recruit",
-      "role": "user",
-      "is_banned": 0,
-      "subscribers_count": 0,
-      "created_at": "2026-09-14 12:55:16"
+      "created_at": "2026-09-14 12:55:16",
+      "password_hash": "$2a$10$COnWLqcUa3qkyuutMWokUe4SibDU8WwHSH2LNXq5dy2Pk.zdk4dFy",
+      "subscribers_count": 0
     },
     {
       "id": "usr_1789398820268_7qtg31",
+      "bio": "Reikage Clan Member",
+      "role": "user",
       "username": "Umbra",
-      "password_hash": "$2a$10$pYlBqf69p7oRWQzrM.ECWeDP0Unpbrge269g1je/0Q6GKyDmiIADe",
+      "clan_rank": "Recruit",
+      "is_banned": 0,
       "avatar_url": "/uploads/avatars/avatar-1789398983013-78618492.png",
       "banner_url": "",
-      "bio": "Reikage Clan Member",
-      "clan_rank": "Recruit",
-      "role": "user",
-      "is_banned": 0,
-      "subscribers_count": 0,
-      "created_at": "2026-09-14T15:13:40.268Z"
+      "created_at": "2026-09-14T15:13:40.268Z",
+      "password_hash": "$2a$10$pYlBqf69p7oRWQzrM.ECWeDP0Unpbrge269g1je/0Q6GKyDmiIADe",
+      "subscribers_count": 0
     }
   ],
-  "videos": [
-    {
-      "id": "vid_1789398849356_jyg66b",
-      "user_id": "usr_1789398820268_7qtg31",
-      "title": "Cosmic Garou Transform",
-      "description": "",
-      "video_url": "/uploads/videos/video-1789398844879-271266565.mp4",
-      "thumbnail_url": "/uploads/thumbnails/thumbnail-1789398849269-210412536.png",
-      "category": "Highlights",
-      "tags": "",
-      "duration": "00:30",
-      "views_count": 2,
-      "likes_count": 0,
-      "is_featured": 0,
-      "created_at": "2026-09-14T15:14:09.357Z"
-    }
-  ],
+  "videos": [],
+  "reports": [],
   "comments": [],
-  "likes": [],
+  "updatedAt": "2026-09-15T05:48:12.530Z",
   "views_log": [],
   "clan_members": [
     {
       "id": "cm_1789383952335",
-      "username": "lunar",
-      "role_title": "Clan Master",
-      "rank_tier": "Unranked",
       "rating": 0,
-      "kd_ratio": 0,
-      "win_rate": 0,
-      "avatar_url": "/uploads/avatars/avatar_admin.svg",
       "is_staff": 1,
-      "order_idx": 1
+      "kd_ratio": 0,
+      "username": "lunar",
+      "win_rate": 0,
+      "order_idx": 1,
+      "rank_tier": "Unranked",
+      "avatar_url": "/uploads/avatars/avatar_admin.svg",
+      "role_title": "Reikage Watch Owner"
     }
   ],
-  "reports": [],
-  "subscriptions": [],
-  "updatedAt": "2026-09-15T03:17:47.821Z"
+  "subscriptions": []
 }

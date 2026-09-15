@@ -312,11 +312,11 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
               >
                 {video.creator_username}
                 <span className="badge badge-reikage" style={{ marginLeft: '6px' }}>
-                  {video.creator_rank || 'Pro Member'}
+                  {video.creator_username?.toLowerCase() === 'lunar' ? 'Reikage Watch Owner' : (video.creator_rank || 'Pro Member')}
                 </span>
               </div>
               <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                {video.subscribers_count || 0} followers
+                {(video.subscribers_count >= 1000 ? `${(video.subscribers_count / 1000).toFixed(1)}K` : (video.subscribers_count || 0))} followers
               </div>
             </div>
 

@@ -132,7 +132,7 @@ export default function ChannelPage({ username, onSelectVideo, onNavigate }) {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <h1 style={{ fontSize: '26px', fontWeight: 900 }}>{channel.username}</h1>
-              <span className="badge badge-reikage">{channel.clan_rank || 'Pro Member'}</span>
+              <span className="badge badge-reikage">{channel.username?.toLowerCase() === 'lunar' ? 'Reikage Watch Owner' : (channel.clan_rank || 'Pro Member')}</span>
               {channel.role === 'admin' && (
                 <span className="badge badge-staff">
                   <Shield size={12} /> Clan Admin
@@ -142,7 +142,7 @@ export default function ChannelPage({ username, onSelectVideo, onNavigate }) {
             <div style={{ fontSize: '13px', color: 'var(--text-secondary)', marginTop: '2px' }}>
               <span>@{channel.username}</span>
               <span style={{ margin: '0 8px' }}>•</span>
-              <span>{channel.subscribers_count?.toLocaleString() || 0} followers</span>
+              <span>{channel.subscribers_count >= 1000 ? `${(channel.subscribers_count / 1000).toFixed(1)}K` : (channel.subscribers_count?.toLocaleString() || 0)} followers</span>
               <span style={{ margin: '0 8px' }}>•</span>
               <span>{channel.videoCount || 0} uploads</span>
             </div>
