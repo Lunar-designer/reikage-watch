@@ -73,13 +73,52 @@ export const api = {
     return handleResponse(res);
   },
 
-  async uploadVideo(formData) {
-    const res = await fetch(`${BASE_URL}/videos/upload`, {
-      method: 'POST',
-      headers: { ...getAuthHeader() },
-      body: formData
+  uploadVideo(formData, onProgress) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', `${BASE_URL}/videos/upload`);
+
+      const token = localStorage.getItem('rk_token');
+      if (token) {
+        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      }
+
+      if (xhr.upload && onProgress) {
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable && event.total > 0) {
+            const percent = Math.min(98, Math.max(1, Math.round((event.loaded / event.total) * 100)));
+            onProgress(percent);
+          }
+        };
+      }
+
+      xhr.onload = () => {
+        let data = null;
+        try {
+          data = JSON.parse(xhr.responseText);
+        } catch (e) {
+          data = xhr.responseText;
+        }
+
+        if (xhr.status >= 200 && xhr.status < 300) {
+          if (onProgress) onProgress(100);
+          resolve(data);
+        } else {
+          const msg = data?.error || (typeof data === 'string' ? data : 'Upload failed');
+          reject(new Error(msg));
+        }
+      };
+
+      xhr.onerror = () => {
+        reject(new Error('Network error during video upload. Please check your internet connection.'));
+      };
+
+      xhr.ontimeout = () => {
+        reject(new Error('Video upload timed out. Match footage may be too large.'));
+      };
+
+      xhr.send(formData);
     });
-    return handleResponse(res);
   },
 
   async toggleLike(id) {

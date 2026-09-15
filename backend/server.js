@@ -108,13 +108,15 @@ app.use((err, req, res, next) => {
 async function startServer() {
   try {
     await getDb();
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(`=========================================`);
       console.log(`  REIKAGE WATCH BACKEND SERVER ONLINE     `);
       console.log(`  Watch. Create. Reikage.                `);
       console.log(`  Port: http://localhost:${PORT}          `);
       console.log(`=========================================`);
     });
+    server.timeout = 15 * 60 * 1000;
+    server.keepAliveTimeout = 65000;
   } catch (err) {
     console.error('Failed to start server:', err);
     process.exit(1);

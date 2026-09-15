@@ -49,8 +49,8 @@ export default function UploadPage({ onSelectVideo, onNavigate }) {
   const handleVideoSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 300 * 1024 * 1024) {
-        setError('Video file exceeds 300MB clan quota limit.');
+      if (file.size > 500 * 1024 * 1024) {
+        setError('Video file exceeds 500MB clan quota limit.');
         return;
       }
       setVideoFile(file);
@@ -108,7 +108,7 @@ export default function UploadPage({ onSelectVideo, onNavigate }) {
 
     setLoading(true);
     setError('');
-    setUploadProgress(25);
+    setUploadProgress(1);
 
     try {
       const formData = new FormData();
@@ -122,8 +122,9 @@ export default function UploadPage({ onSelectVideo, onNavigate }) {
       formData.append('tags', tags.trim());
       formData.append('duration', duration.trim() || '00:00');
 
-      setUploadProgress(60);
-      const res = await api.uploadVideo(formData);
+      const res = await api.uploadVideo(formData, (percent) => {
+        setUploadProgress(percent);
+      });
       setUploadProgress(100);
 
       setTimeout(() => {
@@ -132,7 +133,7 @@ export default function UploadPage({ onSelectVideo, onNavigate }) {
         } else {
           onNavigate('channel', { username: user.username });
         }
-      }, 600);
+      }, 500);
     } catch (err) {
       setError(err.message || 'Upload failed. Please try again.');
       setLoading(false);
@@ -217,7 +218,7 @@ export default function UploadPage({ onSelectVideo, onNavigate }) {
               <Upload size={40} color="#ffffff" style={{ margin: '0 auto 12px auto' }} />
               <div style={{ fontSize: '16px', fontWeight: 800 }}>Select Match Video to Upload</div>
               <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
-                Supports MP4, WebM, MOV. Up to 300MB.
+                Supports MP4, WebM, MOV. Up to 500MB.
               </div>
               <button type="button" className="btn btn-primary" style={{ marginTop: '14px' }}>
                 Browse Files

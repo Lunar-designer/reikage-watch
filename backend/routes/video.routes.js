@@ -218,18 +218,29 @@ router.post('/upload', authenticateToken, uploadMedia.fields([
       ]
     );
 
-    // 1. Save video file to Neon Cloud Media for persistent storage
-    if (videoFile && fs.existsSync(videoFile.path)) {
-      const vidBuffer = fs.readFileSync(videoFile.path);
-      await saveMediaToCloud(`/videos/${videoFile.filename}`, vidBuffer, videoFile.mimetype || 'video/mp4');
-    }
-
-    // 2. Save custom thumbnail to Neon Cloud Media if present
+    // 1. Save custom thumbnail to Neon Cloud Media if present (thumbnails are small images <5MB)
     if (req.files.thumbnail && req.files.thumbnail.length > 0) {
       const thumbFile = req.files.thumbnail[0];
       if (fs.existsSync(thumbFile.path)) {
-        const thumbBuffer = fs.readFileSync(thumbFile.path);
-        await saveMediaToCloud(`/thumbnails/${thumbFile.filename}`, thumbBuffer, thumbFile.mimetype || 'image/jpeg');
+        try {
+          const thumbBuffer = fs.readFileSync(thumbFile.path);
+          await saveMediaToCloud(`/thumbnails/${thumbFile.filename}`, thumbBuffer, thumbFile.mimetype || 'image/jpeg');
+        } catch (tErr) {
+          console.warn('Thumbnail cloud backup notice:', tErr.message);
+        }
+      }
+    }
+
+    // 2. Save video file to Neon Cloud Media only if small (< 15MB) to prevent Postgres query packet overflow
+    if (videoFile && fs.existsSync(videoFile.path)) {
+      try {
+        const stat = fs.statSync(videoFile.path);
+        if (stat.size <= 15 * 1024 * 1024) {
+          const vidBuffer = fs.readFileSync(videoFile.path);
+          await saveMediaToCloud(`/videos/${videoFile.filename}`, vidBuffer, videoFile.mimetype || 'video/mp4');
+        }
+      } catch (vErr) {
+        console.warn('Video cloud backup notice (kept safely on local disk):', vErr.message);
       }
     }
 

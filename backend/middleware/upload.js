@@ -61,6 +61,6 @@ export const uploadMedia = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 300 * 1024 * 1024 // 300 MB limit
+    fileSize: 500 * 1024 * 1024 // 500 MB limit
   }
 });

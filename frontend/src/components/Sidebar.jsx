@@ -132,7 +132,9 @@ export default function Sidebar({ collapsed, activePage, onNavigate }) {
                 <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {member.username}
                 </div>
-                <div style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>{member.role_title}</div>
+                <div style={{ fontSize: '10.5px', color: 'var(--text-muted)' }}>
+                  {member.username?.toLowerCase() === 'lunar' ? 'Reikage Watch Owner' : member.role_title}
+                </div>
               </div>
             </button>
           ))}
