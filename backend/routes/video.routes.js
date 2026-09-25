@@ -308,7 +308,14 @@ router.delete('/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ error: 'Video not found.' });
     }
 
-    if (video.user_id !== req.user.id && req.user.role !== 'admin') {
+    const isOwner = video.user_id === req.user.id;
+    const isPlatformAdmin = 
+      req.user.role === 'admin' ||
+      req.user.role === 'staff' ||
+      req.user.clan_rank === 'Reikage Watch Owner' ||
+      req.user.username?.toLowerCase() === 'lunar';
+
+    if (!isOwner && !isPlatformAdmin) {
       return res.status(403).json({ error: 'You do not have permission to delete this video.' });
     }
 

@@ -130,7 +130,13 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
       alert('Video removed.');
       window.location.hash = '#home';
     } catch (err) {
-      alert(err.message || 'Failed to delete video');
+      console.error('Delete video error:', err);
+      if (err.message && (err.message.includes('token') || err.message.includes('Authentication') || err.message.includes('expired'))) {
+        alert('Your session has expired. Please log in again to manage videos.');
+        openAuthModal('login');
+      } else {
+        alert(err.message || 'Failed to delete video');
+      }
     }
   };
 
@@ -383,8 +389,12 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
               <Flag size={16} />
             </button>
 
-            {/* Delete button (Owner or Admin) */}
-            {(user?.id === video.user_id || user?.role === 'admin') && (
+            {/* Delete button (Owner, Admin, or Reikage Watch Owner) */}
+            {(user?.id === video.user_id ||
+              user?.role === 'admin' ||
+              user?.role === 'staff' ||
+              user?.clan_rank === 'Reikage Watch Owner' ||
+              user?.username?.toLowerCase() === 'lunar') && (
               <button
                 className="btn btn-danger"
                 onClick={handleDeleteVideo}

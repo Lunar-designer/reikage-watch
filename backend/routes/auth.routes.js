@@ -52,7 +52,7 @@ router.post('/register', async (req, res) => {
 
     await saveDatabase();
 
-    const token = jwt.sign({ id: userId, username: trimmedUser }, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ id: userId, username: trimmedUser }, JWT_SECRET, { expiresIn: '365d' });
 
     const newUser = dbGet('SELECT id, username, avatar_url, bio, clan_rank, role, created_at FROM users WHERE id = ?', [userId]);
 
@@ -90,7 +90,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid username or password.' });
     }
 
-    const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, { expiresIn: '365d' });
 
     const safeUser = {
       id: user.id,
