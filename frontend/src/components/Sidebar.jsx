@@ -126,7 +126,8 @@ export default function Sidebar({ collapsed, activePage, onNavigate }) {
               <img
                 src={member.avatar_url || '/uploads/avatars/avatar_admin.svg'}
                 alt={member.username}
-                style={{ width: '26px', height: '26px', borderRadius: '50%', objectFit: 'cover' }}
+                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/uploads/avatars/avatar_admin.svg'; }}
+                style={{ width: '26px', height: '26px', borderRadius: '50%', objectFit: 'cover', aspectRatio: '1 / 1', flexShrink: 0 }}
               />
               <div style={{ textAlign: 'left', minWidth: 0 }}>
                 <div style={{ fontSize: '13px', fontWeight: 700, color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

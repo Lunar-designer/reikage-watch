@@ -109,7 +109,8 @@ export default function Navbar({ onToggleSidebar, onNavigate, activePage, search
                 <img 
                   src={user.avatar_url || '/uploads/avatars/avatar_admin.svg'} 
                   alt={user.username}
-                  style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
+                  onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/uploads/avatars/avatar_admin.svg'; }}
+                  style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', aspectRatio: '1 / 1', flexShrink: 0 }}
                 />
                 <span style={{ fontWeight: 700, fontSize: '13px', color: '#ffffff' }}>
                   {user.username}

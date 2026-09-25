@@ -119,6 +119,7 @@ export default function ChannelPage({ username, onSelectVideo, onNavigate }) {
           <img
             src={channel.avatar_url || '/uploads/avatars/avatar_admin.svg'}
             alt={channel.username}
+            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/uploads/avatars/avatar_admin.svg'; }}
             style={{
               width: '96px',
               height: '96px',
@@ -126,7 +127,9 @@ export default function ChannelPage({ username, onSelectVideo, onNavigate }) {
               border: '3px solid #070707',
               boxShadow: 'var(--shadow-md)',
               background: '#161616',
-              objectFit: 'cover'
+              objectFit: 'cover',
+              aspectRatio: '1 / 1',
+              flexShrink: 0
             }}
           />
           <div>

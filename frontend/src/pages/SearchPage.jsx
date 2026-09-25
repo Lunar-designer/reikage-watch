@@ -117,7 +117,8 @@ export default function SearchPage({ query, onSelectVideo, onSelectCreator }) {
                     <img
                       src={c.avatar_url || '/uploads/avatars/avatar_admin.svg'}
                       alt={c.username}
-                      style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', border: '1.5px solid #fff' }}
+                      onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/uploads/avatars/avatar_admin.svg'; }}
+                      style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover', aspectRatio: '1 / 1', flexShrink: 0, border: '1.5px solid #fff' }}
                     />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontWeight: 800, fontSize: '14.5px', color: '#fff' }}>{c.username}</div>

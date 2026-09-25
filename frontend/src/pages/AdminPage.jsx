@@ -335,7 +335,8 @@ export default function AdminPage({ onSelectVideo, onSelectCreator }) {
                       <img
                         src={u.avatar_url || '/uploads/avatars/avatar_admin.svg'}
                         alt={u.username}
-                        style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }}
+                        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/uploads/avatars/avatar_admin.svg'; }}
+                        style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', aspectRatio: '1 / 1', flexShrink: 0 }}
                       />
                       <div style={{ fontWeight: 800, color: '#fff', fontSize: '13.5px' }}>{u.username}</div>
                     </div>

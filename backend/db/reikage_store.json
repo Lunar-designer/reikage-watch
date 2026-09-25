@@ -1,90 +1,382 @@
 {
-  "likes": [],
   "users": [
     {
       "id": "usr_admin",
-      "bio": "Reikage Clan Master & Platform Director. Leading the premier black-tier competitive gaming roster.",
-      "role": "admin",
       "username": "reikage_admin",
-      "clan_rank": "Clan Master",
-      "is_banned": 0,
+      "password_hash": "$2a$10$kZWi3WoNv9GWPp4OIDQ90e0x7VWgrURpRCHD16OX67O86PHwRRM76",
       "avatar_url": "/uploads/avatars/avatar_admin.svg",
       "banner_url": "",
-      "created_at": "2026-09-14 10:49:24",
-      "password_hash": "$2a$10$kZWi3WoNv9GWPp4OIDQ90e0x7VWgrURpRCHD16OX67O86PHwRRM76",
-      "subscribers_count": 8450
+      "bio": "Reikage Clan Master & Platform Director. Leading the premier black-tier competitive gaming roster.",
+      "clan_rank": "Clan Master",
+      "role": "admin",
+      "is_banned": 0,
+      "subscribers_count": 8450,
+      "created_at": "2026-09-14 10:49:24"
     },
     {
       "id": "usr_1789383562187_01q8wk",
-      "bio": "Reikage Clan Member",
-      "role": "admin",
       "username": "lunar",
-      "clan_rank": "Reikage Watch Owner",
-      "is_banned": 0,
-      "avatar_url": "/uploads/avatars/avatar-1789383931313-613432243.jpg",
-      "banner_url": "",
-      "created_at": "2026-09-14 10:59:22",
       "password_hash": "$2a$10$psahhSRL3oM.88bc87WCa.LSyrerFiBcjebgAKLSbd3mw76QImlee",
-      "subscribers_count": 12850
+      "avatar_url": "/uploads/avatars/avatar-1789461750409-193970553.jpg",
+      "banner_url": "",
+      "bio": "YEAH BRO IM TIRED",
+      "clan_rank": "Reikage Watch Owner",
+      "role": "admin",
+      "is_banned": 0,
+      "subscribers_count": 12850,
+      "created_at": "2026-09-14 10:59:22"
     },
     {
       "id": "usr_1789390398837_9x8lbq",
-      "bio": "Reikage Clan Member",
-      "role": "user",
       "username": "persist_user_229",
-      "clan_rank": "Recruit",
-      "is_banned": 1,
+      "password_hash": "$2a$10$C7MP0L6PUrPISkcsdtC1puXdBKC/g1IJAXWGxDVhRgy7J.ki/CrIi",
       "avatar_url": "/uploads/avatars/avatar_admin.svg",
       "banner_url": "",
-      "created_at": "2026-09-14 12:53:18",
-      "password_hash": "$2a$10$C7MP0L6PUrPISkcsdtC1puXdBKC/g1IJAXWGxDVhRgy7J.ki/CrIi",
-      "subscribers_count": 0
+      "bio": "Reikage Clan Member",
+      "clan_rank": "Recruit",
+      "role": "user",
+      "is_banned": 1,
+      "subscribers_count": 0,
+      "created_at": "2026-09-14 12:53:18"
     },
     {
       "id": "usr_1789390516897_ot1nxg",
-      "bio": "Reikage Clan Member",
-      "role": "user",
       "username": "smoke_user_6838",
-      "clan_rank": "Recruit",
-      "is_banned": 1,
+      "password_hash": "$2a$10$COnWLqcUa3qkyuutMWokUe4SibDU8WwHSH2LNXq5dy2Pk.zdk4dFy",
       "avatar_url": "/uploads/avatars/avatar_admin.svg",
       "banner_url": "",
-      "created_at": "2026-09-14 12:55:16",
-      "password_hash": "$2a$10$COnWLqcUa3qkyuutMWokUe4SibDU8WwHSH2LNXq5dy2Pk.zdk4dFy",
-      "subscribers_count": 0
+      "bio": "Reikage Clan Member",
+      "clan_rank": "Recruit",
+      "role": "user",
+      "is_banned": 1,
+      "subscribers_count": 0,
+      "created_at": "2026-09-14 12:55:16"
     },
     {
       "id": "usr_1789398820268_7qtg31",
-      "bio": "Reikage Clan Member",
-      "role": "user",
       "username": "Umbra",
-      "clan_rank": "Recruit",
-      "is_banned": 0,
+      "password_hash": "$2a$10$pYlBqf69p7oRWQzrM.ECWeDP0Unpbrge269g1je/0Q6GKyDmiIADe",
       "avatar_url": "/uploads/avatars/avatar-1789398983013-78618492.png",
       "banner_url": "",
-      "created_at": "2026-09-14T15:13:40.268Z",
-      "password_hash": "$2a$10$pYlBqf69p7oRWQzrM.ECWeDP0Unpbrge269g1je/0Q6GKyDmiIADe",
-      "subscribers_count": 0
+      "bio": "Reikage Clan Member",
+      "clan_rank": "Recruit",
+      "role": "user",
+      "is_banned": 0,
+      "subscribers_count": 0,
+      "created_at": "2026-09-14T15:13:40.268Z"
+    },
+    {
+      "id": "usr_1789456564208_36297f",
+      "username": "itssrocke",
+      "password_hash": "$2a$10$EU2ROpr2Gx9Uy6IGm0wMo.XOPkBPtmE2IKFxma8LxYUko91d9uXeK",
+      "avatar_url": "/uploads/avatars/avatar_admin.svg",
+      "banner_url": "",
+      "bio": "Reikage Clan Member",
+      "clan_rank": "Recruit",
+      "role": "user",
+      "is_banned": 0,
+      "subscribers_count": 1,
+      "created_at": "2026-09-15T07:16:04.208Z"
+    },
+    {
+      "id": "usr_1789457289299_92rct4",
+      "username": "Sovella",
+      "password_hash": "$2a$10$C4gZU6yQ/RqN8I/lAJsWDevoC8w6J4FjZ6Pr8yx3AYfF9VkfS0KFG",
+      "avatar_url": "/uploads/avatars/avatar_admin.svg",
+      "banner_url": "",
+      "bio": "Reikage Clan Member",
+      "clan_rank": "Recruit",
+      "role": "user",
+      "is_banned": 0,
+      "subscribers_count": 0,
+      "created_at": "2026-09-15T07:28:09.299Z"
+    },
+    {
+      "id": "usr_1789477490871_io4msy",
+      "username": "Sasuke",
+      "password_hash": "$2a$10$iPhqkbKRYbrZ.PlRRxPUcOMsjFyTiHjH3WYy63bgetywzTU86ObJm",
+      "avatar_url": "/uploads/avatars/avatar_admin.svg",
+      "banner_url": "",
+      "bio": "Reikage Clan Member",
+      "clan_rank": "Recruit",
+      "role": "user",
+      "is_banned": 0,
+      "subscribers_count": 0,
+      "created_at": "2026-09-15T13:04:50.871Z"
+    },
+    {
+      "id": "usr_1789479402026_eurllb",
+      "username": "Kitty",
+      "password_hash": "$2a$10$6Yr1XFYBGufmXB6Bg3YTKO5cNh2lRwQMV87/RsYQUFWLEky12Odoq",
+      "avatar_url": "/uploads/avatars/avatar_admin.svg",
+      "banner_url": "",
+      "bio": "Reikage Clan Member",
+      "clan_rank": "Recruit",
+      "role": "user",
+      "is_banned": 0,
+      "subscribers_count": 0,
+      "created_at": "2026-09-15T13:36:42.026Z"
     }
   ],
-  "videos": [],
-  "reports": [],
+  "videos": [
+    {
+      "id": "vid_1789456961323_b4lpm9",
+      "user_id": "usr_1789383562187_01q8wk",
+      "title": "DANCEY DANCEY :>",
+      "description": "",
+      "video_url": "/uploads/videos/video-1789456956516-389466787.mp4",
+      "thumbnail_url": "/uploads/thumbnails/thumb_reikage_default.svg",
+      "category": "Highlights",
+      "tags": "",
+      "duration": "00:14",
+      "views_count": 9,
+      "likes_count": 2,
+      "is_featured": 0,
+      "created_at": "2026-09-15T07:22:41.323Z"
+    },
+    {
+      "id": "vid_1789457446793_lihd6d",
+      "user_id": "usr_1789456564208_36297f",
+      "title": "beat a noob",
+      "description": "ahha",
+      "video_url": "/uploads/videos/video-1789457440956-492662788.mp4",
+      "thumbnail_url": "/uploads/thumbnails/thumbnail-1789457446791-620213374.jpg",
+      "category": "Highlights",
+      "tags": "#noob",
+      "duration": "00:15",
+      "views_count": 13,
+      "likes_count": 1,
+      "is_featured": 0,
+      "created_at": "2026-09-15T07:30:46.793Z"
+    }
+  ],
   "comments": [],
-  "updatedAt": "2026-09-15T05:48:12.530Z",
-  "views_log": [],
+  "likes": [
+    {
+      "id": "lk_1789457315451_8rqyvi",
+      "video_id": "vid_1789456961323_b4lpm9",
+      "user_id": "usr_1789457289299_92rct4",
+      "created_at": "2026-09-15 07:28:35"
+    },
+    {
+      "id": "lk_1789458165551_wk2ysm",
+      "video_id": "vid_1789457446793_lihd6d",
+      "user_id": "usr_1789383562187_01q8wk",
+      "created_at": "2026-09-15 07:42:45"
+    },
+    {
+      "id": "lk_1789474556903_h65etl",
+      "video_id": "vid_1789456961323_b4lpm9",
+      "user_id": "usr_1789398820268_7qtg31",
+      "created_at": "2026-09-15 12:15:56"
+    }
+  ],
+  "views_log": [
+    {
+      "id": "vw_1789456964122_td6uis",
+      "video_id": "vid_1789456961323_b4lpm9",
+      "ip_address": "::1",
+      "user_id": "usr_1789383562187_01q8wk",
+      "viewed_at": 1789456964122
+    },
+    {
+      "id": "vw_1789457448412_ahvy10",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": "usr_1789456564208_36297f",
+      "viewed_at": 1789457448412
+    },
+    {
+      "id": "vw_1789459310793_2ac1la",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789459310792
+    },
+    {
+      "id": "vw_1789459367688_gx3t40",
+      "video_id": "vid_1789456961323_b4lpm9",
+      "ip_address": "::1",
+      "user_id": "usr_1789383562187_01q8wk",
+      "viewed_at": 1789459367688
+    },
+    {
+      "id": "vw_1789461683668_xqiaav",
+      "video_id": "vid_1789456961323_b4lpm9",
+      "ip_address": "::1",
+      "user_id": "usr_1789383562187_01q8wk",
+      "viewed_at": 1789461683668
+    },
+    {
+      "id": "vw_1789461975678_hoqzvs",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789461975678
+    },
+    {
+      "id": "vw_1789464768762_4wxdev",
+      "video_id": "vid_1789456961323_b4lpm9",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789464768762
+    },
+    {
+      "id": "vw_1789464787477_he7v96",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789464787477
+    },
+    {
+      "id": "vw_1789469199122_tshkgq",
+      "video_id": "vid_1789456961323_b4lpm9",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789469199122
+    },
+    {
+      "id": "vw_1789474521245_6ysw1t",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789474521245
+    },
+    {
+      "id": "vw_1789474525277_1zgajc",
+      "video_id": "vid_1789456961323_b4lpm9",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789474525277
+    },
+    {
+      "id": "vw_1789477363101_93goy7",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": "usr_1789383562187_01q8wk",
+      "viewed_at": 1789477363101
+    },
+    {
+      "id": "vw_1789479365036_ct1393",
+      "video_id": "vid_1789456961323_b4lpm9",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789479365036
+    },
+    {
+      "id": "vw_1789479416727_kz5658",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": "usr_1789479402026_eurllb",
+      "viewed_at": 1789479416727
+    },
+    {
+      "id": "vw_1789484991667_p5opmx",
+      "video_id": "vid_1789456961323_b4lpm9",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789484991667
+    },
+    {
+      "id": "vw_1789484997964_uzof59",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789484997964
+    },
+    {
+      "id": "vw_1789545577120_imniun",
+      "video_id": "vid_1789456961323_b4lpm9",
+      "ip_address": "::1",
+      "user_id": "usr_1789383562187_01q8wk",
+      "viewed_at": 1789545577119
+    },
+    {
+      "id": "vw_1789545583666_1hdl6z",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": "usr_1789383562187_01q8wk",
+      "viewed_at": 1789545583666
+    },
+    {
+      "id": "vw_1789556330741_3wb8er",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789556330741
+    },
+    {
+      "id": "vw_1789556335910_v86cnh",
+      "video_id": "vid_1789456961323_b4lpm9",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789556335910
+    },
+    {
+      "id": "vw_1789562324524_opqv01",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789562324523
+    },
+    {
+      "id": "vw_1789641224661_q9y2rr",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": "usr_1789479402026_eurllb",
+      "viewed_at": 1789641224661
+    },
+    {
+      "id": "vw_1789641229944_9rt36i",
+      "video_id": "vid_1789456961323_b4lpm9",
+      "ip_address": "::1",
+      "user_id": "usr_1789479402026_eurllb",
+      "viewed_at": 1789641229944
+    },
+    {
+      "id": "vw_1789966350317_67aag0",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789966350316
+    },
+    {
+      "id": "vw_1789978946156_7ts2hb",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1789978946155
+    },
+    {
+      "id": "vw_1790315783183_dawcwa",
+      "video_id": "vid_1789457446793_lihd6d",
+      "ip_address": "::1",
+      "user_id": null,
+      "viewed_at": 1790315783182
+    }
+  ],
   "clan_members": [
     {
       "id": "cm_1789383952335",
-      "rating": 0,
-      "is_staff": 1,
-      "kd_ratio": 0,
       "username": "lunar",
-      "win_rate": 0,
-      "order_idx": 1,
+      "role_title": "Reikage Watch Owner",
       "rank_tier": "Unranked",
-      "avatar_url": "/uploads/avatars/avatar_admin.svg",
-      "role_title": "Reikage Watch Owner"
+      "rating": 0,
+      "kd_ratio": 0,
+      "win_rate": 0,
+      "avatar_url": "/uploads/avatars/avatar-1789461750409-193970553.jpg",
+      "is_staff": 1,
+      "order_idx": 1
     }
   ],
-  "subscriptions": []
+  "reports": [],
+  "subscriptions": [
+    {
+      "id": "sub_1789458163762_neiypc",
+      "subscriber_id": "usr_1789383562187_01q8wk",
+      "channel_id": "usr_1789456564208_36297f",
+      "created_at": "2026-09-15 07:42:43"
+    }
+  ],
+  "updatedAt": "2026-09-25T13:06:46.616Z"
 }

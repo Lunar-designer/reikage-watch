@@ -41,27 +41,50 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
 
 // 2. Cloud Media Fallback: If not on ephemeral disk, retrieve directly from Neon Cloud Media store
 app.use('/uploads', async (req, res) => {
+  const uploadsRoot = path.join(__dirname, 'uploads');
+  const relPath = decodeURIComponent(req.path || ''); // e.g. /videos/video-xxx.mp4
+
   try {
-    const relPath = req.path; // e.g. /videos/video-xxx.mp4
     const media = await getMediaFromCloud(relPath);
     if (media && media.data) {
-      // Cache file locally to ephemeral disk for high-speed subsequent chunks
-      const localFilePath = path.join(__dirname, 'uploads', relPath);
+      // Cache file locally to ephemeral disk for high-speed subsequent streaming
+      const localFilePath = path.join(uploadsRoot, relPath);
       const dir = path.dirname(localFilePath);
       if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
       fs.writeFileSync(localFilePath, media.data);
 
-      res.setHeader('Content-Type', media.mime_type || 'application/octet-stream');
-      res.setHeader('Accept-Ranges', 'bytes');
-      res.setHeader('Cache-Control', 'public, max-age=604800');
-      return res.send(media.data);
+      return res.sendFile(localFilePath, {
+        acceptRanges: true,
+        maxAge: '7d',
+        headers: {
+          'Accept-Ranges': 'bytes',
+          'Cache-Control': 'public, max-age=604800'
+        }
+      });
     }
   } catch (err) {
     console.warn('Neon cloud media fallback notice:', err.message);
   }
 
-  // Not found locally or in cloud — return 404 immediately, never hang connection
-  return res.status(404).json({ error: 'Requested media asset not found.' });
+  // 3. Fallback assets: Never send 404 JSON for images or videos to prevent player/UI crashes
+  if (relPath.startsWith('/avatars/')) {
+    const fallbackAvatar = path.join(uploadsRoot, 'avatars', 'avatar_admin.svg');
+    if (fs.existsSync(fallbackAvatar)) {
+      return res.sendFile(fallbackAvatar, { maxAge: '1h' });
+    }
+  } else if (relPath.startsWith('/thumbnails/')) {
+    const fallbackThumb = path.join(uploadsRoot, 'thumbnails', 'thumb_reikage_default.svg');
+    if (fs.existsSync(fallbackThumb)) {
+      return res.sendFile(fallbackThumb, { maxAge: '1h' });
+    }
+  } else if (relPath.startsWith('/videos/')) {
+    const fallbackVid = path.join(uploadsRoot, 'videos', 'lunar_val_ace.mp4');
+    if (fs.existsSync(fallbackVid)) {
+      return res.sendFile(fallbackVid, { acceptRanges: true, maxAge: '1h' });
+    }
+  }
+
+  return res.status(404).send('Asset not found');
 });
 
 // Mount API routes

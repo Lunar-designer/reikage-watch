@@ -187,6 +187,14 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
             onSeeked={() => setIsBuffering(false)}
             onError={(e) => {
               console.warn('Video failed to load or stream:', e);
+              const target = e.currentTarget;
+              if (target.src && !target.src.includes('lunar_val_ace.mp4')) {
+                console.log('Attempting fallback broadcast stream...');
+                target.src = '/uploads/videos/lunar_val_ace.mp4';
+                target.load();
+                target.play().catch(() => {});
+                return;
+              }
               setIsBuffering(false);
               setVideoError(true);
             }}
@@ -302,6 +310,7 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
             <img
               src={video.creator_avatar || '/uploads/avatars/avatar_admin.svg'}
               alt={video.creator_username}
+              onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/uploads/avatars/avatar_admin.svg'; }}
               style={{ width: '44px', height: '44px', borderRadius: '50%', cursor: 'pointer', border: '1.5px solid #ffffff', objectFit: 'cover', aspectRatio: '1 / 1', flexShrink: 0 }}
               onClick={() => onSelectCreator(video.creator_username)}
             />
@@ -452,6 +461,7 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
               <img
                 src={user.avatar_url || '/uploads/avatars/avatar_admin.svg'}
                 alt={user.username}
+                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/uploads/avatars/avatar_admin.svg'; }}
                 style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', aspectRatio: '1 / 1', flexShrink: 0 }}
               />
               <div style={{ flex: 1 }}>
@@ -521,6 +531,7 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
                 <img
                   src={comment.avatar_url || '/uploads/avatars/avatar_admin.svg'}
                   alt={comment.username}
+                  onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/uploads/avatars/avatar_admin.svg'; }}
                   style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', aspectRatio: '1 / 1', flexShrink: 0 }}
                 />
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -593,8 +604,9 @@ export default function WatchPage({ videoId, onSelectVideo, onSelectCreator }) {
                 }}
               >
                 <img
-                  src={rel.thumbnail_url}
+                  src={rel.thumbnail_url || '/uploads/thumbnails/thumb_reikage_default.svg'}
                   alt={rel.title}
+                  onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/uploads/thumbnails/thumb_reikage_default.svg'; }}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
                 <span className="video-duration-pill" style={{ bottom: '4px', right: '4px', fontSize: '9px', padding: '1px 4px' }}>

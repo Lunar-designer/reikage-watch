@@ -9,6 +9,7 @@ export default function HeroBanner({ featuredVideo, onWatch }) {
       <img
         src={featuredVideo.thumbnail_url || '/uploads/thumbnails/thumb_reikage_default.svg'}
         alt={featuredVideo.title}
+        onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/uploads/thumbnails/thumb_reikage_default.svg'; }}
         className="hero-backdrop-img"
       />
       <div className="hero-gradient-overlay" />
@@ -41,7 +42,8 @@ export default function HeroBanner({ featuredVideo, onWatch }) {
             <img
               src={featuredVideo.creator_avatar || '/uploads/avatars/avatar_admin.svg'}
               alt={featuredVideo.creator_username}
-              style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid #fff', objectFit: 'cover', aspectRatio: '1 / 1' }}
+              onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/uploads/avatars/avatar_admin.svg'; }}
+              style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid #fff', objectFit: 'cover', aspectRatio: '1 / 1', flexShrink: 0 }}
             />
             <div style={{ fontSize: '13px' }}>
               <div style={{ fontWeight: 800, color: '#fff' }}>{featuredVideo.creator_username}</div>

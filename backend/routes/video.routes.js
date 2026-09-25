@@ -231,11 +231,11 @@ router.post('/upload', authenticateToken, uploadMedia.fields([
       }
     }
 
-    // 2. Save video file to Neon Cloud Media only if small (< 15MB) to prevent Postgres query packet overflow
+    // 2. Save video file to Neon Cloud Media if <= 35MB for reliable persistence across ephemeral restarts
     if (videoFile && fs.existsSync(videoFile.path)) {
       try {
         const stat = fs.statSync(videoFile.path);
-        if (stat.size <= 15 * 1024 * 1024) {
+        if (stat.size <= 35 * 1024 * 1024) {
           const vidBuffer = fs.readFileSync(videoFile.path);
           await saveMediaToCloud(`/videos/${videoFile.filename}`, vidBuffer, videoFile.mimetype || 'video/mp4');
         }

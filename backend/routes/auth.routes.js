@@ -165,14 +165,13 @@ router.put('/settings', authenticateToken, (req, res) => {
       // If user is also on clan roster, sync avatar there too
       dbRun('UPDATE clan_members SET avatar_url = ? WHERE LOWER(username) = LOWER(?)', [avatarUrl, user.username]);
 
-      // Cloud backup: non-blocking so temporary cloud latencies never fail user settings
+      // Cloud backup: save avatar into Neon cloud store before returning response
       if (req.file && fs.existsSync(req.file.path)) {
         try {
           const avatarBuffer = fs.readFileSync(req.file.path);
-          saveMediaToCloud(`/avatars/${req.file.filename}`, avatarBuffer, req.file.mimetype || 'image/jpeg')
-            .catch(cErr => console.warn('Cloud avatar backup notice:', cErr.message));
+          await saveMediaToCloud(`/avatars/${req.file.filename}`, avatarBuffer, req.file.mimetype || 'image/jpeg');
         } catch (fErr) {
-          console.warn('Local avatar read notice:', fErr.message);
+          console.warn('Avatar cloud backup notice:', fErr.message);
         }
       }
 

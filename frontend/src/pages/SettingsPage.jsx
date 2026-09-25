@@ -150,7 +150,8 @@ export default function SettingsPage({ onNavigate }) {
             <img
               src={avatarPreview || '/uploads/avatars/avatar_admin.svg'}
               alt={user.username}
-              style={{ width: '84px', height: '84px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #fff', flexShrink: 0 }}
+              onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = '/uploads/avatars/avatar_admin.svg'; }}
+              style={{ width: '84px', height: '84px', borderRadius: '50%', objectFit: 'cover', aspectRatio: '1 / 1', border: '2px solid #fff', flexShrink: 0 }}
             />
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
