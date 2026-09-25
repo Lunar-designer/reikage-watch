@@ -1,6 +1,8 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import fs from 'fs';
+import path from 'path';
 import { dbGet, dbRun, saveDatabase, saveMediaToCloud } from '../db/database.js';
 import { authenticateToken, JWT_SECRET } from '../middleware/auth.js';
 import { uploadMedia } from '../middleware/upload.js';
@@ -139,24 +141,39 @@ router.put('/settings', authenticateToken, (req, res) => {
       }
 
       let avatarUrl = user.avatar_url;
-      if (req.file) {
+      if (req.file && req.file.filename) {
         avatarUrl = `/uploads/avatars/${req.file.filename}`;
       }
 
-      const updatedBio = bio !== undefined ? bio.trim().slice(0, 300) : user.bio;
+      const updatedBio = (bio !== undefined && bio !== null) 
+        ? String(bio).trim().slice(0, 300) 
+        : (user.bio || 'Reikage Clan Member');
 
-      if (newPassword) {
-        if (!currentPassword) {
+      const cleanNewPassword = typeof newPassword === 'string' ? newPassword.trim() : '';
+      const cleanCurrentPassword = typeof currentPassword === 'string' ? currentPassword.trim() : '';
+
+      if (cleanNewPassword) {
+        if (!cleanCurrentPassword) {
           return res.status(400).json({ error: 'Current password is required to set a new password.' });
         }
-        const match = await bcrypt.compare(currentPassword, user.password_hash);
-        if (!match) {
-          return res.status(400).json({ error: 'Current password is incorrect.' });
-        }
-        if (newPassword.length < 6) {
+        if (cleanNewPassword.length < 6) {
           return res.status(400).json({ error: 'New password must be at least 6 characters.' });
         }
-        const newHash = await bcrypt.hash(newPassword, 10);
+
+        let isMatch = false;
+        if (user.password_hash) {
+          try {
+            isMatch = await bcrypt.compare(cleanCurrentPassword, user.password_hash);
+          } catch (bErr) {
+            console.warn('bcrypt compare error:', bErr.message);
+            isMatch = false;
+          }
+        }
+        if (!isMatch) {
+          return res.status(400).json({ error: 'Current password is incorrect.' });
+        }
+
+        const newHash = await bcrypt.hash(cleanNewPassword, 10);
         dbRun('UPDATE users SET password_hash = ?, bio = ?, avatar_url = ? WHERE id = ?', [newHash, updatedBio, avatarUrl, user.id]);
       } else {
         dbRun('UPDATE users SET bio = ?, avatar_url = ? WHERE id = ?', [updatedBio, avatarUrl, user.id]);
@@ -166,10 +183,12 @@ router.put('/settings', authenticateToken, (req, res) => {
       dbRun('UPDATE clan_members SET avatar_url = ? WHERE LOWER(username) = LOWER(?)', [avatarUrl, user.username]);
 
       // Cloud backup: save avatar into Neon cloud store before returning response
-      if (req.file && fs.existsSync(req.file.path)) {
+      if (req.file) {
         try {
-          const avatarBuffer = fs.readFileSync(req.file.path);
-          await saveMediaToCloud(`/avatars/${req.file.filename}`, avatarBuffer, req.file.mimetype || 'image/jpeg');
+          if (req.file.path && fs.existsSync(req.file.path)) {
+            const avatarBuffer = fs.readFileSync(req.file.path);
+            await saveMediaToCloud(`/avatars/${req.file.filename}`, avatarBuffer, req.file.mimetype || 'image/jpeg');
+          }
         } catch (fErr) {
           console.warn('Avatar cloud backup notice:', fErr.message);
         }
@@ -181,7 +200,7 @@ router.put('/settings', authenticateToken, (req, res) => {
       res.json({ message: 'Profile updated successfully.', user: updatedUser });
     } catch (err) {
       console.error('Settings update error:', err);
-      res.status(500).json({ error: 'Failed to update profile settings.' });
+      res.status(500).json({ error: err.message || 'Failed to update profile settings.' });
     }
   });
 });

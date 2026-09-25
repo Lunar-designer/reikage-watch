@@ -20,6 +20,15 @@ export default function SettingsPage({ onNavigate }) {
 
   const avatarInputRef = useRef(null);
 
+  React.useEffect(() => {
+    if (user) {
+      setBio(user.bio || '');
+      if (!avatarFile) {
+        setAvatarPreview(user.avatar_url || '');
+      }
+    }
+  }, [user]);
+
   if (!user) {
     return (
       <div style={{ textAlign: 'center', padding: '80px 20px', maxWidth: '480px', margin: '0 auto' }}>
@@ -69,18 +78,22 @@ export default function SettingsPage({ onNavigate }) {
     setSuccessMsg('');
     setErrorMsg('');
 
-    if (newPassword) {
-      if (newPassword.length < 6) {
+    const cleanNew = newPassword.trim();
+    const cleanCurrent = currentPassword.trim();
+    const cleanConfirm = confirmNewPassword.trim();
+
+    if (cleanNew) {
+      if (cleanNew.length < 6) {
         setErrorMsg('New password must be at least 6 characters.');
         setLoading(false);
         return;
       }
-      if (newPassword !== confirmNewPassword) {
+      if (cleanNew !== cleanConfirm) {
         setErrorMsg('New passwords do not match.');
         setLoading(false);
         return;
       }
-      if (!currentPassword) {
+      if (!cleanCurrent) {
         setErrorMsg('Current password is required to change your password.');
         setLoading(false);
         return;
@@ -93,18 +106,21 @@ export default function SettingsPage({ onNavigate }) {
       if (avatarFile) {
         formData.append('avatar', avatarFile, 'avatar.jpg');
       }
-      if (newPassword) {
-        formData.append('newPassword', newPassword);
-        formData.append('currentPassword', currentPassword);
+      if (cleanNew) {
+        formData.append('newPassword', cleanNew);
+        formData.append('currentPassword', cleanCurrent);
       }
 
-      await api.updateSettings(formData);
+      const res = await api.updateSettings(formData);
       await refreshUser();
       setSuccessMsg('Account settings and avatar updated successfully!');
       setAvatarFile(null);
       setCurrentPassword('');
       setNewPassword('');
       setConfirmNewPassword('');
+      if (res && res.user && res.user.avatar_url) {
+        setAvatarPreview(res.user.avatar_url);
+      }
     } catch (err) {
       setErrorMsg(err.message || 'Failed to update settings. Please verify your photo size and try again.');
     } finally {
